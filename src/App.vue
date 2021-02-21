@@ -1,32 +1,31 @@
 <template>
-  <div id="app">
-    <div id="nav">
-      <router-link to="/">Home</router-link> |
-      <router-link to="/about">About</router-link>
-    </div>
-    <router-view/>
+  <div>
+    <ul id="products-list">
+      <li class="product" v-for="product in products" v-bind:key="product.productId">
+        productId - {{ product.productId }}
+        categoryId - {{ product.categoryId }}
+        price - {{ product.price }}
+        name - {{ product.name }}
+      </li>
+    </ul>
   </div>
 </template>
 
-<style lang="scss">
-#app {
-  font-family: Avenir, Helvetica, Arial, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  text-align: center;
-  color: #2c3e50;
-}
+<script lang="ts">
+import { Component, Vue } from 'vue-property-decorator';
 
-#nav {
-  padding: 30px;
+@Component
+export default class Deals extends Vue {
+  get products() {
+    return this.$store.getters.PRODUCTS
+  }
 
-  a {
-    font-weight: bold;
-    color: #2c3e50;
-
-    &.router-link-exact-active {
-      color: #42b983;
-    }
+  mounted() {
+    this.$store.dispatch('GET_PRODUCTS');
   }
 }
+
+</script>
+
+<style lang="scss">
 </style>
