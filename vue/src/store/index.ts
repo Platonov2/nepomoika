@@ -1,30 +1,26 @@
 import Product from '@/models/Product'
-import Vue from 'vue'
 import Vuex from 'vuex'
 import axios from 'axios'
 import Category from '@/models/Category'
 
-Vue.use(Vuex)
-
 export default new Vuex.Store({
   state: {
-    products: [] as Product[],
-    categories: [] as Category[],
+    сategories: [] as Category[],
+    currentCategory: {} as Category,
     currentProducts: [] as Product[],
-    currentProduct: [] as Product[],
+    currentProduct: {} as Product,
   },
   getters: {
-    PRODUCTS: (state) => state.products,
-    CATEGORIES: (state) => state.categories,
+    CATEGORIES: (state) => state.сategories,
     CURRENT_PRODUCTS: (state) => state.currentProducts,
     CURRENT_PRODUCT: (state) => state.currentProduct,
   },
   mutations: {
-    SET_PRODUCTS: (state, products) => {
-      state.products = products;
-    },
     SET_CATEGORIES: (state, categories) => {
-      state.categories = categories;
+      state.сategories = categories;
+    },
+    SET_CURRENT_CATEGORY: (state, category) => {
+      state.currentCategory = category;
     },
     SET_CURRENT_PRODUCTS: (state, products) => {
       state.currentProducts = products;
@@ -37,7 +33,7 @@ export default new Vuex.Store({
     /**       КАТЕГОРИИ          */
 
     // Получение списка всех категорий
-    GET_CATEGORIES: (context) => {
+    GET_ROOT_CATEGORIES: (context) => {
       axios
         .get('http://localhost:8090/category')
         .then((response) => {
