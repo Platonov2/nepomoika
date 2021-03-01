@@ -5,22 +5,28 @@ import Category from '@/models/Category'
 
 export default new Vuex.Store({
   state: {
-    сategories: [] as Category[],
+    rootCategories: [] as Category[],
+    currentCategories: [] as Category[],
     currentCategory: {} as Category,
     currentProducts: [] as Product[],
     currentProduct: {} as Product,
   },
   getters: {
-    CATEGORIES: (state) => state.сategories,
+    ROOT_CATEGORIES: (state) => state.rootCategories,
+    CURRENT_CATEGORIES: (state) => state.currentCategories,
+    CURRENT_CATEGORY: (state) => state.currentCategory,
     CURRENT_PRODUCTS: (state) => state.currentProducts,
     CURRENT_PRODUCT: (state) => state.currentProduct,
   },
   mutations: {
-    SET_CATEGORIES: (state, categories) => {
-      state.сategories = categories;
+    SET_ROOT_CATEGORIES: (state, rootCategories) => {
+      state.rootCategories = rootCategories;
     },
-    SET_CURRENT_CATEGORY: (state, category) => {
-      state.currentCategory = category;
+    SET_CURRENT_CATEGORIES: (state, currentCategories) => {
+      state.currentCategories = currentCategories;
+    },
+    SET_CURRENT_CATEGORY: (state, currentCategory) => {
+      state.currentCategory = currentCategory;
     },
     SET_CURRENT_PRODUCTS: (state, products) => {
       state.currentProducts = products;
@@ -35,9 +41,19 @@ export default new Vuex.Store({
     // Получение списка всех категорий
     GET_ROOT_CATEGORIES: (context) => {
       axios
-        .get('http://localhost:8090/category')
+        .get('http://localhost:8090/category/roots')
         .then((response) => {
-          context.commit('SET_CATEGORIES', response.data)
+          context.commit('SET_ROOT_CATEGORIES', response.data)
+        });
+    },
+    CHANGE_CURRENT_CATEGORY: (context, category: Category) => {
+      axios
+        .get('http://localhost:8090/category/children', {
+          params: category.category_id,
+        })
+        .then((response) => {
+          context.commit('SET_CURRENT_CATEGORY', category);
+          context.commit('SET_CURRENT_CATEGORIES', response.data);
         });
     },
     // Добавление новой категории

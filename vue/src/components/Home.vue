@@ -11,23 +11,28 @@
         <div>+ Добавить товар</div>
       </div>
     </router-link>
-    <ul id="products-list">
+    <ul id="root-list">
       Все категории
-      <li class="product" v-for="category in categories" v-bind:key="category.category_id">
-        categoryId - {{ category.category_id }};
-        category_name - {{ category.category_name }};
-        root_category_id - {{ category.root_category_id }};
+      <li class="rootCategory-list" v-for="category in rootCategories" v-bind:key="category.category_id">
+        <div class="rootCategory" v-on:click="showSubcategories(category)">
+          {{ category.category_name }};
+        </div>
+        <ul v-if="subcategoriesShowed">
+          <li class="subCategory-list"
+          v-for="subCategory in currentCategories" v-bind:key="subCategory.category_id">
+            <div class="subCategory" v-if="subCategory.root_category_id=category.category_id">
+              {{ subCategory.category_name }};
+            </div>
+          </li>
+        </ul>
       </li>
     </ul>
-    .
-    <ul id="products-list">
-      Все товары из первой категории
-      <li class="product" v-for="product in currentProducts" v-bind:key="product.product_id">
-        product_id - {{ product.product_id }};
-        product_name - {{ product.product_name }};
-        product_price - {{ product.product_price }};
-        image_link - {{ product.image_link }};
-        product_category_id - {{ product.product_category_id }};
+    <ul>
+      <li class="product-list" v-for="product in currentProducts" v-bind:key="product.product_id">
+        <div class="product"
+        v-if="product.product_category_id=subCategory.category_id">
+          {{ product.product_name }}
+        </div>
       </li>
     </ul>
   </div>
@@ -35,11 +40,16 @@
 
 <script lang="ts">
 import { Component, Vue } from 'vue-property-decorator';
+import Category from '../models/Category';
 
 @Component
 export default class Home extends Vue {
-  get categories() {
-    return this.$store.getters.CATEGORIES;
+  get rootCategories() {
+    return this.$store.getters.ROOT_CATEGORIES;
+  }
+
+  get currentCategories() {
+    return this.$store.getters.CURRENT_CATEGORIES;
   }
 
   get currentProducts() {
@@ -47,8 +57,11 @@ export default class Home extends Vue {
   }
 
   mounted() {
-    this.$store.dispatch('GET_COMPANIES');
-    this.$store.dispatch('GET_PRODUCTS_BY_CATEGORY', 1);
+    this.$store.dispatch('GET_ROOT_CATEGORIES');
+  }
+
+  showSubcategories(category: Category) {
+    this.$store.dispatch('CHANGE_CURRENT_CATEGORY', category);
   }
 }
 </script>
