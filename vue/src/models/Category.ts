@@ -9,4 +9,5 @@ export default interface Category {
     category_id: number;
     category_name: string;
     root_category_id: number;
+    is_leaf: boolean;
 }

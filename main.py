@@ -1,7 +1,9 @@
 from server import server
 from models import db
-from flask import request, abort
-from repositories.categoryRepository import create_new_category, get_category_by_id, update_category, delete_category
+from flask import request, abort, jsonify
+from repositories.categoryRepository import create_new_category, get_category_by_id, update_category, delete_category, get_all_root_category,\
+                                            get_children_category
+
 from repositories.productRepository import create_new_product, get_product_by_id, update_product, delete_product
 
 
@@ -59,12 +61,13 @@ def category_post():
     # :template:`index.html`
     # """
     try:
-        message = request.get_json()
+        message = request.get_json()[0]
         category_name = message["category_name"]
-        root_category_id = message["root_category_id"]
+        root_category_id = int(message["root_category_id"])
 
         create_new_category(category_name, root_category_id)
         return "succ"
+        # return message
     except():
         abort(400)
 
@@ -100,7 +103,26 @@ def category_delete():
         category_id = request.args.get("category_id")
         delete_category(category_id)
         return "succ"
-    except:
+    except():
+        abort(400)
+
+
+@server.route("/category/roots", methods=['GET'])
+def get_root_categories():
+    try:
+        root_categories = get_all_root_category()
+        return jsonify(root_categories_list=[e.serialize() for e in root_categories])
+    except():
+        abort(400)
+
+
+@server.route("/category/children", methods=['GET'])
+def get_children_categories():
+    try:
+        category_id = request.args.get("category_id")
+        children_categories = get_children_category(category_id)
+        return jsonify(root_categories_list=[e.serialize() for e in children_categories])
+    except():
         abort(400)
 
 
@@ -110,7 +132,7 @@ def category_delete():
 @server.route("/product", methods=['POST'])
 def product_post():
     try:
-        message = request.get_json()
+        message = request.get_json()[0]
         product_name = message["product_name"]
         product_price = message["product_price"]
         image_link = message["image_link"]

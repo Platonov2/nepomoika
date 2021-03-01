@@ -21,10 +21,14 @@ class Category(db.Model):
 
     def serialize(self):
         children_list = [e.id for e in self.children_categories]
+        is_leaf = True
+        if len(children_list) > 0:
+            is_leaf = False
         return {
             'id': self.id,
             'category_name': self.category_name,
             'parent_category_id': self.parent_id,
+            'is_leaf': is_leaf,
             'children_categories_id': children_list
         }
 
