@@ -5,34 +5,24 @@ import Category from '@/models/Category'
 
 export default new Vuex.Store({
   state: {
-    rootCategories: [] as Category[],
-    currentCategories: [] as Category[],
-    currentCategory: {} as Category,
-    currentProducts: [] as Product[],
-    currentProduct: {} as Product,
+    category: {} as Category,
+    subcategories: [] as Category[],
+    products: [] as Product[],
   },
   getters: {
-    ROOT_CATEGORIES: (state) => state.rootCategories,
-    CURRENT_CATEGORIES: (state) => state.currentCategories,
-    CURRENT_CATEGORY: (state) => state.currentCategory,
-    CURRENT_PRODUCTS: (state) => state.currentProducts,
-    CURRENT_PRODUCT: (state) => state.currentProduct,
+    CATEGORY: (state) => state.category,
+    SUBCATEGORIES: (state) => state.subcategories,
+    PRODUCTS: (state) => state.products,
   },
   mutations: {
-    SET_ROOT_CATEGORIES: (state, rootCategories) => {
-      state.rootCategories = rootCategories;
+    SET_CATEGORY: (state, category) => {
+      state.category = category;
     },
-    SET_CURRENT_CATEGORIES: (state, currentCategories) => {
-      state.currentCategories = currentCategories;
-    },
-    SET_CURRENT_CATEGORY: (state, currentCategory) => {
-      state.currentCategory = currentCategory;
+    SET_SUBCATEGORIES: (state, subcategories) => {
+      state.subcategories = subcategories;
     },
     SET_CURRENT_PRODUCTS: (state, products) => {
-      state.currentProducts = products;
-    },
-    SET_CURRENT_PRODUCT: (state, product) => {
-      state.currentProduct = product;
+      state.products = products;
     },
   },
   actions: {
@@ -43,17 +33,19 @@ export default new Vuex.Store({
       axios
         .get('http://localhost:8090/category/roots')
         .then((response) => {
-          context.commit('SET_ROOT_CATEGORIES', response.data)
+          context.commit('SET_CATEGORY', null)
+          context.commit('SET_SUBCATEGORIES', response.data)
         });
     },
-    CHANGE_CURRENT_CATEGORY: (context, category: Category) => {
+    CHANGE_CATEGORY: (context, category: Category) => {
       axios
         .get('http://localhost:8090/category/children', {
           params: category.category_id,
         })
         .then((response) => {
-          context.commit('SET_CURRENT_CATEGORY', category);
-          context.commit('SET_CURRENT_CATEGORIES', response.data);
+          context.commit('SET_CATEGORY', category);
+          context.commit('SET_SUBCATEGORIES', response.data);
+          context.dispatch('GET_PRODUCTS_BY_CATEGORY', category.category_id);
         });
     },
     // Добавление новой категории
@@ -91,16 +83,6 @@ export default new Vuex.Store({
 
     /**       ТОВАРЫ          */
 
-    // Получение товара по его id
-    GET_PRODUCT: (context, product_id: number) => {
-      axios
-        .get('http://localhost:8090/product', {
-          params: product_id,
-        })
-        .then((response) => {
-          context.commit('SET_CURRENT_PRODUCT', response.data)
-        });
-    },
     // Получение всех товаров из категории по его id
     GET_PRODUCTS_BY_CATEGORY: (context, category_id: number) => {
       axios

@@ -12,25 +12,17 @@
       </div>
     </router-link>
     <ul id="root-list">
+      {{ category.category_name }}
       Все категории
-      <li class="rootCategory-list" v-for="category in rootCategories" v-bind:key="category.category_id">
-        <div class="rootCategory" v-on:click="showSubcategories(category)">
-          {{ category.category_name }};
+      <li class="rootCategory-list" v-for="subcategory in subcategories" v-bind:key="subcategory.category_id">
+        <div class="rootCategory" v-on:click="changeCategory(subcategory)">
+          {{ subcategory.category_name }};
         </div>
-        <ul v-if="subcategoriesShowed">
-          <li class="subCategory-list"
-          v-for="subCategory in currentCategories" v-bind:key="subCategory.category_id">
-            <div class="subCategory" v-if="subCategory.root_category_id=category.category_id">
-              {{ subCategory.category_name }};
-            </div>
-          </li>
-        </ul>
       </li>
     </ul>
     <ul>
-      <li class="product-list" v-for="product in currentProducts" v-bind:key="product.product_id">
-        <div class="product"
-        v-if="product.product_category_id=subCategory.category_id">
+      <li class="product-list" v-for="product in products" v-bind:key="product.product_id">
+        <div class="product">
           {{ product.product_name }}
         </div>
       </li>
@@ -44,24 +36,24 @@ import Category from '../models/Category';
 
 @Component
 export default class Home extends Vue {
-  get rootCategories() {
-    return this.$store.getters.ROOT_CATEGORIES;
+  get category() {
+    return this.$store.getters.CATEGORY;
   }
 
-  get currentCategories() {
-    return this.$store.getters.CURRENT_CATEGORIES;
+  get subcategories() {
+    return this.$store.getters.CATEGORIES;
   }
 
-  get currentProducts() {
-    return this.$store.getters.CURRENT_PRODUCTS;
+  get products() {
+    return this.$store.getters.PRODUCTS;
   }
 
   mounted() {
     this.$store.dispatch('GET_ROOT_CATEGORIES');
   }
 
-  showSubcategories(category: Category) {
-    this.$store.dispatch('CHANGE_CURRENT_CATEGORY', category);
+  changeCategory(category: Category) {
+    this.$store.dispatch('CHANGE_CATEGORY', category);
   }
 }
 </script>

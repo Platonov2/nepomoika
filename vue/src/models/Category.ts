@@ -10,5 +10,4 @@ export default interface Category {
     category_name: string;
     root_category_id: number;
     children_categories_id: number[];
-    is_leaf: boolean;
 }
