@@ -21,14 +21,13 @@ class Category(db.Model):
 
     def serialize(self):
         children_list = [e.id for e in self.children_categories]
-        is_leaf = True
-        if len(children_list) > 0:
-            is_leaf = False
+        # is_leaf = True
+        # if len(children_list) > 0:
+        #     is_leaf = False
         return {
-            'id': self.id,
+            'category_id': self.id,
             'category_name': self.category_name,
-            'parent_category_id': self.parent_id,
-            'is_leaf': is_leaf,
+            'root_category_id': self.parent_id,
             'children_categories_id': children_list
         }
 
@@ -45,7 +44,7 @@ class Product(db.Model):
 
     def serialize(self):
         return {
-            'id': self.id,
+            'product_id': self.id,
             'product_name': self.product_name,
             'product_price': self.product_price,
             'image_link': self.image_link,

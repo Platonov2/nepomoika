@@ -111,7 +111,7 @@ def category_delete():
 def get_root_categories():
     try:
         root_categories = get_all_root_category()
-        return jsonify(root_categories_list=[e.serialize() for e in root_categories])
+        return jsonify([e.serialize() for e in root_categories])
     except():
         abort(400)
 
@@ -121,7 +121,7 @@ def get_children_categories():
     try:
         category_id = request.args.get("category_id")
         children_categories = get_children_category(category_id)
-        return jsonify(children_categories_list=[e.serialize() for e in children_categories])
+        return jsonify([e.serialize() for e in children_categories])
     except():
         abort(400)
 

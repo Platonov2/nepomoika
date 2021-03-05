@@ -12,7 +12,6 @@
       </div>
     </router-link>
     <ul id="root-list">
-      {{ category.category_name }}
       Все категории
       <li class="rootCategory-list" v-for="subcategory in subcategories" v-bind:key="subcategory.category_id">
         <div class="rootCategory" v-on:click="changeCategory(subcategory)">
@@ -22,10 +21,10 @@
     </ul>
     <ul>
       <li class="product-list" v-for="product in products" v-bind:key="product.product_id">
-        <div class="product">
-          {{ product.product_name }}
-        </div>
-      </li>
+      <div class="product">
+        {{ product.product_name }}
+      </div>
+     </li>
     </ul>
   </div>
 </template>
@@ -41,7 +40,7 @@ export default class Home extends Vue {
   }
 
   get subcategories() {
-    return this.$store.getters.CATEGORIES;
+    return this.$store.getters.SUBCATEGORIES;
   }
 
   get products() {

@@ -20,6 +20,8 @@ export default new Vuex.Store({
     },
     SET_SUBCATEGORIES: (state, subcategories) => {
       state.subcategories = subcategories;
+      console.log(subcategories);
+      console.log(state.subcategories);
     },
     SET_CURRENT_PRODUCTS: (state, products) => {
       state.products = products;
@@ -40,7 +42,7 @@ export default new Vuex.Store({
     CHANGE_CATEGORY: (context, category: Category) => {
       axios
         .get('http://localhost:8090/category/children', {
-          params: category.category_id,
+          params: {"category_id": category.category_id},
         })
         .then((response) => {
           context.commit('SET_CATEGORY', category);
@@ -86,8 +88,8 @@ export default new Vuex.Store({
     // Получение всех товаров из категории по его id
     GET_PRODUCTS_BY_CATEGORY: (context, category_id: number) => {
       axios
-        .get('http://localhost:8090/product', {
-          params: category_id,
+        .get('http://localhost:8090/product/', {
+          params: {"category_id": category_id},
         })
         .then((response) => {
           context.commit('SET_CURRENT_PRODUCTS', response.data)
