@@ -11,7 +11,33 @@ export default new Vuex.Store({
   },
   getters: {
     CATEGORY: (state) => state.category,
-    SUBCATEGORIES: (state) => state.subcategories,
+    // SUBCATEGORIES: (state) => state.subcategories,
+    SUBCATEGORIES: (state) => [
+      {
+        category_id: 1,
+        category_name: "a",
+        root_category_id: null,
+        children_categories_id: [3, 4],
+      },
+      {
+        category_id: 2,
+        category_name: "b",
+        root_category_id: null,
+        children_categories_id: null,
+      },
+      {
+        category_id: 3,
+        category_name: "aa",
+        root_category_id: 1,
+        children_categories_id: null,
+      },
+      {
+        category_id: 4,
+        category_name: "ab",
+        root_category_id: 1,
+        children_categories_id: null,
+      },
+    ],
     PRODUCTS: (state) => state.products,
   },
   mutations: {
@@ -75,7 +101,7 @@ export default new Vuex.Store({
       return new Promise((resolve, reject) => {
         axios
           .delete('http://localhost:8090/category', {
-            params: category_id,
+            params: {"category_id": category_id},
           })
           .then((response) => {
             console.log(response);
