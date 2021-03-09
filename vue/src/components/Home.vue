@@ -13,15 +13,18 @@
       </router-link>
       <div id="parentCategory" v-if="category!=null">
         <div id="back" v-on:click="back(category)">
-          &lt; Назад
+          &lt; Back to
         </div>
         <div id="categoryName">
           {{ category.category_name }}
         </div>
       </div>
       <ul id="subcategories" v-if="subcategories!=null">
-        <div id="subcategories-title">
-          Все категории:
+        <div class="category-title" id="root-categories-title" v-if="category==null">
+          Root categories:
+        </div>
+        <div class="category-title" id="subcategories-title" v-if="category!=null">
+          Subcategories:
         </div>
         <li class="subcategory" v-for="subcategory in subcategories" v-bind:key="subcategory.category_id">
           <div class="subcategoryInfo" v-on:click="changeCategory(subcategory)">
@@ -33,9 +36,18 @@
         </li>
       </ul>
       <ul id="products" v-if="products!=null">
+        <div class="category-title" id="products-title">
+          Products in category:
+        </div>
         <li class="product-list" v-for="product in products" v-bind:key="product.product_id">
         <div class="product">
-          {{ product.product_name }}
+          <div>
+            Name: {{ product.product_name }}
+          </div>
+          <div>
+            Price: {{ product.product_price }}
+          </div>
+          <image src= "{{ product.image_link }}" alt="not succ"/>
         </div>
        </li>
       </ul>
@@ -67,6 +79,7 @@ export default class Home extends Vue {
 
   back(category: Category) {
     if (category.root_category_id != null) {
+      this.$store.dispatch('SET_CURRENT_CATEGORY', category.root_category_id);
       this.$store.dispatch('CHANGE_CATEGORY', category.root_category_id);
     }
     else {
@@ -75,7 +88,8 @@ export default class Home extends Vue {
   }
 
   changeCategory(category: Category) {
-    this.$store.dispatch('CHANGE_CATEGORY', category);
+    this.$store.dispatch('SET_CURRENT_CATEGORY', category.category_id);
+    this.$store.dispatch('CHANGE_CATEGORY', category.category_id);
   }
 
   deleteCategory(category_id: number) {
@@ -89,6 +103,20 @@ export default class Home extends Vue {
   display: inline-block;
   width: 100%;
   height: 100%;
+
+  .product {
+    padding: 10px;
+    width: 80%;
+    margin: 10px auto;
+    border-top: 1px solid black;
+    border-bottom: 1px solid black;
+  }
+
+  #products {
+    margin-left: 20px;
+    padding-left: 10px;
+    list-style-type: none;
+  }
 
   #addCategory {
     display: inline-block;
@@ -109,6 +137,12 @@ export default class Home extends Vue {
       display: inline-block;
     }
 
+    #categoryName{
+      margin-left: 10px;
+      color: #616060;
+      font-size: 16pt;
+    }
+
     #back {
       color: #616060;
       cursor: pointer;
@@ -120,26 +154,28 @@ export default class Home extends Vue {
     }
   }
 
+  .category-title {
+    font-size: 16pt;
+    padding-top: 10px;
+  }
+
   #subcategories {
     display: block;
-    width: 410px;
     margin-left: 20px;
     padding-left: 10px;
     // box-shadow: 1.3px 1.3px 5px #707070;
 
-    #subcategories-title {
-      font-size: 16pt;
-      padding-top: 10px;
-    }
 
     .subcategory {
       display: flex;
-      width: 400px;
-      padding: 5px 0px;
+      justify-content: space-between;
+      width: 80%;
+      margin: 10px auto;
+      padding: 10px;
+
 
       .subcategoryInfo {
         display: inline-block;
-        width: 400px;
         font-size: 14pt;
         color: #616060;
         cursor: pointer;

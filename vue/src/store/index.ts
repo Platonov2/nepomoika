@@ -10,47 +10,51 @@ export default new Vuex.Store({
     products: [] as Product[],
   },
   getters: {
+    // CATEGORY_NAME: (state) => state.category_name,
+    // CATEGORY_ID: (state) => state.category,
     CATEGORY: (state) => state.category,
-    // SUBCATEGORIES: (state) => state.subcategories,
-    SUBCATEGORIES: (state) => [
-      {
-        category_id: 1,
-        category_name: "a",
-        root_category_id: null,
-        children_categories_id: [3, 4],
-      },
-      {
-        category_id: 2,
-        category_name: "b",
-        root_category_id: null,
-        children_categories_id: null,
-      },
-      {
-        category_id: 3,
-        category_name: "aa",
-        root_category_id: 1,
-        children_categories_id: null,
-      },
-      {
-        category_id: 4,
-        category_name: "ab",
-        root_category_id: 1,
-        children_categories_id: null,
-      },
-    ],
+    SUBCATEGORIES: (state) => state.subcategories,
+    // SUBCATEGORIES: (state) => [
+    //   {
+    //     category_id: 1,
+    //     category_name: "a",
+    //     root_category_id: null,
+    //     children_categories_id: [3, 4],
+    //   },
+    //   {
+    //     category_id: 2,
+    //     category_name: "b",
+    //     root_category_id: null,
+    //     children_categories_id: null,
+    //   },
+    //   {
+    //     category_id: 3,
+    //     category_name: "aa",
+    //     root_category_id: 1,
+    //     children_categories_id: null,
+    //   },
+    //   {
+    //     category_id: 4,
+    //     category_name: "ab",
+    //     root_category_id: 1,
+    //     children_categories_id: null,
+    //   },
+    // ],
     PRODUCTS: (state) => state.products,
   },
   mutations: {
+    // SET_CATEGORY_NAME: (state, category_name) => {
+    //   state.category_name = category_name;
+    // },
     SET_CATEGORY: (state, category) => {
       state.category = category;
     },
     SET_SUBCATEGORIES: (state, subcategories) => {
       state.subcategories = subcategories;
-      console.log(subcategories);
-      console.log(state.subcategories);
     },
     SET_CURRENT_PRODUCTS: (state, products) => {
       state.products = products;
+      console.log(state.products)
     },
   },
   actions: {
@@ -62,18 +66,28 @@ export default new Vuex.Store({
         .get('http://localhost:8090/category/roots')
         .then((response) => {
           context.commit('SET_CATEGORY', null)
+          context.commit('SET_CURRENT_PRODUCTS', null)
           context.commit('SET_SUBCATEGORIES', response.data)
         });
     },
-    CHANGE_CATEGORY: (context, category: Category) => {
+    // Получение текущей категории по её id
+    SET_CURRENT_CATEGORY: (context, category_id: number) => {
       axios
-        .get('http://localhost:8090/category/children', {
-          params: {"category_id": category.category_id},
+        .get('http://localhost:8090/category', {
+          params: {"category_id": category_id},
         })
         .then((response) => {
-          context.commit('SET_CATEGORY', category);
+          context.commit('SET_CATEGORY', response.data)
+        });
+    },
+    CHANGE_CATEGORY: (context, category_id: number) => {
+      axios
+        .get('http://localhost:8090/category/children', {
+          params: {"category_id": category_id},
+        })
+        .then((response) => {
           context.commit('SET_SUBCATEGORIES', response.data);
-          context.dispatch('GET_PRODUCTS_BY_CATEGORY', category.category_id);
+          context.dispatch('GET_PRODUCTS_BY_CATEGORY', category_id);
         });
     },
     // Добавление новой категории
@@ -114,7 +128,7 @@ export default new Vuex.Store({
     // Получение всех товаров из категории по его id
     GET_PRODUCTS_BY_CATEGORY: (context, category_id: number) => {
       axios
-        .get('http://localhost:8090/product/', {
+        .get('http://localhost:8090/products', {
           params: {"category_id": category_id},
         })
         .then((response) => {

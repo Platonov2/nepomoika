@@ -14,6 +14,10 @@ def get_product_by_id(product_id: int) -> Product:
     return db.session.query(Product).filter_by(id=product_id).one()
 
 
+def get_products_by_category_id(category_id: int) -> [Product]:
+    return db.session.query(Product).filter_by(product_category_id=category_id).all()
+
+
 def update_product(product_id: int, product_name: str, product_price: int, image_link: str, product_category_id: int) -> None:
     product = db.session.query(Product).filter_by(id=product_id).one()
     product.product_name = product_name

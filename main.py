@@ -4,7 +4,7 @@ from flask import request, abort, jsonify
 from repositories.categoryRepository import create_new_category, get_category_by_id, update_category, delete_category, get_all_root_category,\
                                             get_children_category
 
-from repositories.productRepository import create_new_product, get_product_by_id, update_product, delete_product
+from repositories.productRepository import create_new_product, get_product_by_id, update_product, delete_product, get_products_by_category_id
 
 
 @server.route("/")
@@ -149,6 +149,16 @@ def product_get():
         product_id = request.args.get("product_id")
         product = get_product_by_id(product_id)
         return product.serialize()
+    except():
+        abort(400)
+
+
+@server.route("/products", methods=['GET'])
+def products_get():
+    try:
+        product_id = request.args.get("category_id")
+        products = get_products_by_category_id(product_id)
+        return jsonify([e.serialize() for e in products])
     except():
         abort(400)
 
