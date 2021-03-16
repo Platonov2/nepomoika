@@ -1,4 +1,4 @@
-from models import db, Product
+from backend.relationDB.models import db, Product
 
 
 def create_new_product(product_name: str, product_price: int, image_link: str, product_category_id: int) -> None:

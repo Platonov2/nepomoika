@@ -1,6 +1,4 @@
-import datetime
-
-from flask import Flask, render_template, request, redirect, url_for
+from flask import Flask
 import os
 from flask_cors import CORS
 
@@ -10,3 +8,4 @@ server.config['SQLALCHEMY_DATABASE_URI'] = "postgresql://" + os.environ["POSTGRE
                                            ":" + os.environ["POSTGRES_PASSWORD"] + "@" + os.environ["POSTGRES_HOST"] \
                                            + ":" + os.environ["POSTGRES_PORT"] + "/" + os.environ["POSTGRES_DB"]
 server.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+

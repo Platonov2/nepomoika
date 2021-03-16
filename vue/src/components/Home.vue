@@ -1,16 +1,18 @@
 <template>
   <div>
     <div id="main">
-      <router-link to="/AddCategory" class="nav-element">
-        <div id="addCategory">
-          <div>+ Добавить категорию</div>
-        </div>
-      </router-link>
-      <router-link to="/AddProduct" class="nav-element">
-        <div id="addProduct">
-          <div>+ Добавить товар</div>
-        </div>
-      </router-link>
+      <div class="buttons">
+        <router-link to="/AddCategory" class="nav-element">
+          <div id="addCategory">
+            <div>+ Добавить категорию</div>
+          </div>
+        </router-link>
+        <router-link to="/AddProduct" class="nav-element">
+          <div id="addProduct">
+            <div>+ Добавить товар</div>
+          </div>
+        </router-link>
+      </div>
       <div id="parentCategory" v-if="category!=null">
         <div id="back" v-on:click="back(category)">
           &lt; Back to
@@ -103,6 +105,13 @@ export default class Home extends Vue {
   display: inline-block;
   width: 100%;
   height: 100%;
+
+  .buttons{
+    margin: 0 auto;
+    width: 80%;
+    display: flex;
+    justify-content: space-between;
+  }
 
   .product {
     padding: 10px;

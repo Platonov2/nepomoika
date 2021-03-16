@@ -1,10 +1,13 @@
-from server import server
-from models import db
+from backend.server import server
+from backend.relationDB.models import db
 from flask import request, abort, jsonify
-from repositories.categoryRepository import create_new_category, get_category_by_id, update_category, delete_category, get_all_root_category,\
-                                            get_children_category
+from backend.queueMessaging.consumers.changeMessageConsumer import ChangeMessageConsumer
 
-from repositories.productRepository import create_new_product, get_product_by_id, update_product, delete_product, get_products_by_category_id
+from backend.relationDB.repositories.categoryRepository import create_new_category, get_category_by_id, update_category, delete_category, \
+                                                               get_all_root_category, get_children_category
+
+from backend.relationDB.repositories.productRepository import create_new_product, get_product_by_id, update_product, delete_product,\
+                                                              get_products_by_category_id
 
 
 @server.route("/")
@@ -67,7 +70,6 @@ def category_post():
 
         create_new_category(category_name, root_category_id)
         return "succ"
-        # return message
     except():
         abort(400)
 
@@ -190,4 +192,6 @@ def product_delete():
 
 if __name__ == "__main__":
     db.create_all()
+    changeMessageConsumer = ChangeMessageConsumer()
+    # changeMessageConsumer.start_consuming_thread()
     server.run(host='0.0.0.0', port=5000)
