@@ -1,8 +1,8 @@
-from models import db, Category
+from backend.relationDB.models import db, Category
 
 
 def create_new_category(category_name: str, parent_category_id: int) -> None:
-    parent_category = None;
+    parent_category = None
     if parent_category_id != -1:
         parent_category = db.session.query(Category).filter_by(id=parent_category_id).one()
 

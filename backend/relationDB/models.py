@@ -1,11 +1,9 @@
-import datetime
-
 from flask_sqlalchemy import SQLAlchemy
-from server import server
-from sqlalchemy.dialects.postgresql import VARCHAR, TEXT
-
+from backend.server import server
+from sqlalchemy import event
+from backend.queueMessaging.publishers.cahngeMessagePublisher import ChangeMessagePublisher
 db = SQLAlchemy(server)
-# migrate = Migrate(server, db)
+changeMessagePublisher = ChangeMessagePublisher()
 
 # -------------------model tables-------------------------
 
@@ -30,6 +28,13 @@ class Category(db.Model):
             'root_category_id': self.parent_id,
             'children_categories_id': children_list
         }
+
+
+@event.listens_for(Category, 'before_insert')
+def category_insert(mapper, connection, target):
+    changeMessagePublisher.publish_task(target.serialize())
+# event.listen(Category, 'before_update', changeMessagePublisher.publish_task("update"))
+# event.listen(Category, 'before_delete', changeMessagePublisher.publish_task("delete"))
 
 
 class Product(db.Model):
