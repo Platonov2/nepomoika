@@ -47,7 +47,7 @@
           <div>
             Price: {{ product.product_price }}
           </div>
-          <image src= "{{ product.image_link }}" alt="not succ"/>
+          <!-- <image src= "{{ product.image_link }}" alt="not succ"/> -->
         </div>
        </li>
       </ul>

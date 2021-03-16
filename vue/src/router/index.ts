@@ -16,6 +16,11 @@ const routes: Array<RouteConfig> = [
     name: 'AddProduct',
     component: () => import('../components/AddProduct.vue'),
   },
+  {
+    path: '/authorization',
+    name: 'Authorization',
+    component: () => import('../components/Authorization.vue')
+  },
 ]
 
 const router = new VueRouter({
