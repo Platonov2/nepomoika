@@ -13,90 +13,22 @@
           </div>
         </router-link>
       </div>
-      <div id="parentCategory" v-if="category!=null">
-        <div id="back" v-on:click="back(category)">
-          &lt; Back to
-        </div>
-        <div id="categoryName">
-          {{ category.category_name }}
-        </div>
-      </div>
-      <ul id="subcategories" v-if="subcategories!=null">
-        <div class="category-title" id="root-categories-title" v-if="category==null">
-          Root categories:
-        </div>
-        <div class="category-title" id="subcategories-title" v-if="category!=null">
-          Subcategories:
-        </div>
-        <li class="subcategory" v-for="subcategory in subcategories" v-bind:key="subcategory.category_id">
-          <div class="subcategoryInfo" v-on:click="changeCategory(subcategory)">
-            {{ subcategory.category_name }}
-          </div>
-          <div class="deleteCategory" v-on:click="deleteCategory(subcategory.category_id)">
-            X
-          </div>
-        </li>
-      </ul>
-      <ul id="products" v-if="products!=null">
-        <div class="category-title" id="products-title">
-          Products in category:
-        </div>
-        <li class="product-list" v-for="product in products" v-bind:key="product.product_id">
-        <div class="product">
-          <div>
-            Name: {{ product.product_name }}
-          </div>
-          <div>
-            Price: {{ product.product_price }}
-          </div>
-          <!-- <image src= "{{ product.image_link }}" alt="not succ"/> -->
-        </div>
-       </li>
-      </ul>
+      <CategoryAndProductList id="categoryAndProductList"/>
     </div>
   </div>
 </template>
 
 <script lang="ts">
 import { Component, Vue } from 'vue-property-decorator';
-import Category from '../models/Category';
+import CategoryAndProductList from './CategoryAndProductList.vue'
 
-@Component
+@Component({
+  components: {
+    CategoryAndProductList,
+  },
+})
 export default class Home extends Vue {
-  get category() {
-    return this.$store.getters.CATEGORY;
-  }
-
-  get subcategories() {
-    return this.$store.getters.SUBCATEGORIES;
-  }
-
-  get products() {
-    return this.$store.getters.PRODUCTS;
-  }
-
-  mounted() {
-    this.$store.dispatch('GET_ROOT_CATEGORIES');
-  }
-
-  back(category: Category) {
-    if (category.root_category_id != null) {
-      this.$store.dispatch('SET_CURRENT_CATEGORY', category.root_category_id);
-      this.$store.dispatch('CHANGE_CATEGORY', category.root_category_id);
-    }
-    else {
-      this.$store.dispatch('GET_ROOT_CATEGORIES');
-    }
-  }
-
-  changeCategory(category: Category) {
-    this.$store.dispatch('SET_CURRENT_CATEGORY', category.category_id);
-    this.$store.dispatch('CHANGE_CATEGORY', category.category_id);
-  }
-
-  deleteCategory(category_id: number) {
-    this.$store.dispatch('DELETE_CATEGORY', category_id);
-  }
+  
 }
 </script>
 
@@ -110,21 +42,6 @@ export default class Home extends Vue {
     margin: 0 auto;
     width: 80%;
     display: flex;
-    justify-content: space-between;
-  }
-
-  .product {
-    padding: 10px;
-    width: 80%;
-    margin: 10px auto;
-    border-top: 1px solid black;
-    border-bottom: 1px solid black;
-  }
-
-  #products {
-    margin-left: 20px;
-    padding-left: 10px;
-    list-style-type: none;
   }
 
   #addCategory {
@@ -135,75 +52,6 @@ export default class Home extends Vue {
   #addProduct {
     display: inline-block;
     margin-left: 20px;
-  }
-
-  #parentCategory {
-    display: block;
-    margin-top: 20px;
-    margin-left: 20px;
-
-    #categoryName, #back {
-      display: inline-block;
-    }
-
-    #categoryName{
-      margin-left: 10px;
-      color: #616060;
-      font-size: 16pt;
-    }
-
-    #back {
-      color: #616060;
-      cursor: pointer;
-      font-size: 16pt;
-    }
-
-    #back:hover {
-      color: black;
-    }
-  }
-
-  .category-title {
-    font-size: 16pt;
-    padding-top: 10px;
-  }
-
-  #subcategories {
-    display: block;
-    margin-left: 20px;
-    padding-left: 10px;
-    // box-shadow: 1.3px 1.3px 5px #707070;
-
-
-    .subcategory {
-      display: flex;
-      justify-content: space-between;
-      width: 80%;
-      margin: 10px auto;
-      padding: 10px;
-
-
-      .subcategoryInfo {
-        display: inline-block;
-        font-size: 14pt;
-        color: #616060;
-        cursor: pointer;
-      }
-
-      .subcategoryInfo:hover {
-        color: black;
-      }
-
-      .deleteCategory {
-        display: inline-block;
-        color: #616060;
-      }
-
-      .deleteCategory:hover {
-        color: red;
-        cursor: pointer;
-      }
-    }
   }
 }
 </style>

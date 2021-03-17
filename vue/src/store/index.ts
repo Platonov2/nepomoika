@@ -8,12 +8,15 @@ export default new Vuex.Store({
     category: {} as Category,
     subcategories: [] as Category[],
     products: [] as Product[],
-    isAuthorized: false as boolean,
+    editedCategory: {} as Category,
+    editedProduct: {} as Product,
   },
   getters: {
     CATEGORY: (state) => state.category,
     SUBCATEGORIES: (state) => state.subcategories,
     PRODUCTS: (state) => state.products,
+    EDITED_CATEGORY: (state) => state.editedCategory,
+    EDITED_PRODUCT: (state) => state.editedProduct,
   },
   mutations: {
     SET_CATEGORY: (state, category) => {
@@ -26,6 +29,30 @@ export default new Vuex.Store({
       state.products = products;
       console.log(state.products)
     },
+    SET_EDITED_CATEGORY: (state, category) => {
+      state.editedCategory = category;
+    },
+    SET_EDITED_PRODUCT: (state, product) => {
+      state.editedProduct = product;
+    },
+    DELETE_CATEGORY: (state, category_id) => {
+      for (let i = 0; i < state.subcategories.length; i++) {
+        const category = state.subcategories[i];
+        if (category.category_id == category_id) {
+          state.subcategories.splice(i, 1);
+          break;
+        }
+      }
+    },
+    DELETE_PRODUCT: (state, product_id) => {
+      for (let i = 0; i < state.products.length; i++) {
+        const product = state.products[i];
+        if (product.product_id == product_id) {
+          state.products.splice(i, 1);
+          break;
+        }
+      }
+    }
   },
   actions: {
     /**       КАТЕГОРИИ          */
@@ -40,7 +67,6 @@ export default new Vuex.Store({
           context.commit('SET_SUBCATEGORIES', response.data)
         });
     },
-    // Получение текущей категории по её id
     SET_CURRENT_CATEGORY: (context, category_id: number) => {
       axios
         .get('http://localhost:8090/category', {
@@ -50,7 +76,7 @@ export default new Vuex.Store({
           context.commit('SET_CATEGORY', response.data)
         });
     },
-    CHANGE_CATEGORY: (context, category_id: number) => {
+    CHOOSE_CATEGORY: (context, category_id: number) => {
       axios
         .get('http://localhost:8090/category/children', {
           params: {"category_id": category_id},
@@ -66,8 +92,9 @@ export default new Vuex.Store({
         axios
           .post('http://localhost:8090/category', category)
           .then((response) => {
-            console.log(response);
-          });
+            resolve(response);
+          })
+          .catch((error) => reject(error));
       });
     },
     // Обновление категории
@@ -76,20 +103,24 @@ export default new Vuex.Store({
         axios
           .put('http://localhost:8090/category', category)
           .then((response) => {
-            console.log(response);
-          });
+            resolve(response);
+          })
+          .catch((error) => reject(error));
       });
     },
     // Удаление категории
     DELETE_CATEGORY(state, category_id: number) {
+      this.commit('DELETE_CATEGORY', category_id);
+
       return new Promise((resolve, reject) => {
         axios
           .delete('http://localhost:8090/category', {
             params: {"category_id": category_id},
           })
           .then((response) => {
-            console.log(response);
-          });
+            resolve(response);
+          })
+          .catch((error) => reject(error));
       });
     },
 
@@ -111,8 +142,9 @@ export default new Vuex.Store({
         axios
           .post('http://localhost:8090/product', product)
           .then((response) => {
-            console.log(response);
-          });
+            resolve(response);
+          })
+          .catch((error) => reject(error));
       });
     },
     // Обновление товара
@@ -121,20 +153,24 @@ export default new Vuex.Store({
         axios
           .put('http://localhost:8090/product', product)
           .then((response) => {
-            console.log(response);
-          });
+            resolve(response);
+          })
+          .catch((error) => reject(error));
       });
     },
     // Удаление товара
     DELETE_PRODUCT(state, product_id: number) {
+      this.commit('DELETE_PRODUCT', product_id);
+
       return new Promise((resolve, reject) => {
         axios
           .delete('http://localhost:8090/product', {
-            params: product_id,
+            params: {"product_id": product_id},
           })
           .then((response) => {
-            console.log(response);
-          });
+            resolve(response);
+          })
+          .catch((error) => reject(error));
       });
     },
   },

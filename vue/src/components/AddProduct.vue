@@ -36,6 +36,8 @@ export default class AddProduct extends Vue {
       dispatch('POST_NEW_PRODUCT', [this.product])
       .then(() => {
         this.$router.push('/');
+        this.$store.dispatch('SET_CURRENT_CATEGORY', this.product.product_category_id);
+        this.$store.dispatch('CHOOSE_CATEGORY', this.product.product_category_id);
       });
   }
 }

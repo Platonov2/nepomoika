@@ -28,6 +28,8 @@ export default class AddCategory extends Vue {
       dispatch('POST_NEW_CATEGORY', [this.category])
       .then(() => {
         this.$router.push('/');
+        this.$store.dispatch('SET_CURRENT_CATEGORY', this.category.root_category_id);
+        this.$store.dispatch('CHOOSE_CATEGORY', this.category.root_category_id);
       });
   }
 }
