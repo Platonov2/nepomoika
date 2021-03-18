@@ -25,7 +25,7 @@ export default new Vuex.Store({
     SET_SUBCATEGORIES: (state, subcategories) => {
       state.subcategories = subcategories;
     },
-    SET_CURRENT_PRODUCTS: (state, products) => {
+    SET_PRODUCTS: (state, products) => {
       state.products = products;
       console.log(state.products)
     },
@@ -63,7 +63,7 @@ export default new Vuex.Store({
         .get('http://localhost:8090/category/roots')
         .then((response) => {
           context.commit('SET_CATEGORY', null)
-          context.commit('SET_CURRENT_PRODUCTS', null)
+          context.commit('SET_PRODUCTS', [])
           context.commit('SET_SUBCATEGORIES', response.data)
         });
     },
@@ -133,7 +133,7 @@ export default new Vuex.Store({
           params: {"category_id": category_id},
         })
         .then((response) => {
-          context.commit('SET_CURRENT_PRODUCTS', response.data)
+          context.commit('SET_PRODUCTS', response.data)
         });
     },
     // Добавление нового товара
