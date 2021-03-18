@@ -1,7 +1,7 @@
 from backend.documentDB.connector import categories_collection
 
 
-def category_save(insert_data) -> None:
+def category_create(insert_data) -> None:
     categories_collection.insert_one(insert_data)
 
 
@@ -9,7 +9,7 @@ def category_update(update_criteria, update_data) -> None:
     categories_collection.update(update_criteria, update_data)
 
 
-def category_remove(remove_criteria) -> None:
+def category_delete(remove_criteria) -> None:
     categories_collection.remove(remove_criteria)
 
 

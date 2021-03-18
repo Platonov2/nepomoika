@@ -2,6 +2,11 @@ from flask_sqlalchemy import SQLAlchemy
 from backend.server import server
 from sqlalchemy import event
 from backend.queueMessaging.publishers.cahngeMessagePublisher import ChangeMessagePublisher
+from backend.queueMessaging.MessageObject.CUDMessage import CUDMessage
+from backend.queueMessaging.MessageObject.messageType import MessageType
+from backend.queueMessaging.MessageObject.messageCollection import MessageCollection
+
+
 db = SQLAlchemy(server)
 changeMessagePublisher = ChangeMessagePublisher()
 
@@ -29,14 +34,6 @@ class Category(db.Model):
             'children_categories_id': children_list
         }
 
-
-@event.listens_for(Category, 'before_insert')
-def category_insert(mapper, connection, target):
-    changeMessagePublisher.publish_task(target.serialize())
-# event.listen(Category, 'before_update', changeMessagePublisher.publish_task("update"))
-# event.listen(Category, 'before_delete', changeMessagePublisher.publish_task("delete"))
-
-
 class Product(db.Model):
     __tablename__ = 'product'
     id = db.Column(db.Integer, primary_key=True)
@@ -55,3 +52,35 @@ class Product(db.Model):
             'image_link': self.image_link,
             'product_category_id': self.product_category_id,
         }
+
+# ------------------- table triggers-------------------------
+
+
+@event.listens_for(Category, 'after_insert')
+def category_insert(mapper, connection, target):
+    changeMessagePublisher.publish_task(CUDMessage(MessageType.CREATE, MessageCollection.CATEGORY, target).serialize())
+
+
+@event.listens_for(Category, 'after_update')
+def category_insert(mapper, connection, target):
+    changeMessagePublisher.publish_task(CUDMessage(MessageType.UPDATE, MessageCollection.CATEGORY, target).serialize())
+
+
+@event.listens_for(Category, 'after_delete')
+def category_insert(mapper, connection, target):
+    changeMessagePublisher.publish_task(CUDMessage(MessageType.DELETE, MessageCollection.CATEGORY, target).serialize())
+
+
+@event.listens_for(Product, 'after_insert')
+def product_insert(mapper, connection, target):
+    changeMessagePublisher.publish_task(CUDMessage(MessageType.CREATE, MessageCollection.PRODUCT, target).serialize())
+
+
+@event.listens_for(Product, 'after_update')
+def product_insert(mapper, connection, target):
+    changeMessagePublisher.publish_task(CUDMessage(MessageType.UPDATE, MessageCollection.PRODUCT, target).serialize())
+
+
+@event.listens_for(Product, 'after_delete')
+def product_insert(mapper, connection, target):
+    changeMessagePublisher.publish_task(CUDMessage(MessageType.DELETE, MessageCollection.PRODUCT, target).serialize())
