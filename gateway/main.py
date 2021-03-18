@@ -27,7 +27,7 @@ def admin_access():
     current_identity = get_jwt_identity()
     user_role = get_user_role(current_identity)
     if user_role.role_name == "admin":
-        return jsonify(logged_in_as="admin")
+        return jsonify(logged_in_ass="admin")
     else:
         return jsonify({"msg": "go away from here"}), 401
 
@@ -74,7 +74,7 @@ def register():
 def optionally_protected():
     current_identity = get_jwt_identity()
     if current_identity:
-        return jsonify(logged_in_as=current_identity)
+        return jsonify(logged_in_ass=current_identity)
     else:
         return jsonify({"msg": "go away from here"}), 401
 
