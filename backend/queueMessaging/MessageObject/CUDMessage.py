@@ -10,7 +10,7 @@ class CUDMessage:
 
     def serialize(self):
         return {
-            'message_type': self.message_type,
-            'message_collection': self.message_collection,
+            'message_type': self.message_type.serialize(),
+            'message_collection': self.message_collection.serialize(),
             'message_body': self.message_body,
         }

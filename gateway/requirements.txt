@@ -5,3 +5,4 @@ Flask-SQLAlchemy
 Flask-Migrate
 flask_jwt_extended
 psycopg2-binary
+flask-reggie

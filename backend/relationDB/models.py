@@ -58,7 +58,7 @@ class Product(db.Model):
 
 @event.listens_for(Category, 'after_insert')
 def category_insert(mapper, connection, target):
-    changeMessagePublisher.publish_task(CUDMessage(MessageType.CREATE, MessageCollection.CATEGORY, target).serialize())
+    changeMessagePublisher.publish_task(CUDMessage(MessageType.CREATE, MessageCollection.CATEGORY, target.serialize()).serialize())
 
 
 @event.listens_for(Category, 'after_update')
