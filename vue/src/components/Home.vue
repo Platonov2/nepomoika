@@ -28,30 +28,20 @@ import CategoryAndProductList from './CategoryAndProductList.vue'
   },
 })
 export default class Home extends Vue {
-  
 }
 </script>
 
 <style lang="scss">
+
 #main {
   display: inline-block;
-  width: 100%;
-  height: 100%;
-
-  .buttons{
-    margin: 0 auto;
-    width: 80%;
-    display: flex;
-  }
-
-  #addCategory {
-    display: inline-block;
-    margin-left: 20px;
-  }
-
-  #addProduct {
-    display: inline-block;
-    margin-left: 20px;
-  }
+  margin: 40px;
+  width: 90%;
 }
+
+#categoryAndProductList {
+  display: block;
+  margin-top: 20px;
+}
+
 </style>
