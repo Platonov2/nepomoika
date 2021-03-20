@@ -7,4 +7,4 @@ class MessageType(Enum):
     DELETE = 3
 
     def serialize(self):
-        return 'type'
+        return str(self)

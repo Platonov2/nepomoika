@@ -1,5 +1,5 @@
-from backend.queueMessaging.MessageObject.messageType import MessageType
-from backend.queueMessaging.MessageObject.messageCollection import MessageCollection
+from backend.queueMessaging.messageObject.enum.messageType import MessageType
+from backend.queueMessaging.messageObject.enum.messageCollection import MessageCollection
 
 
 class CUDMessage:

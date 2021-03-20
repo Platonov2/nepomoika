@@ -6,4 +6,4 @@ class MessageCollection(Enum):
     CATEGORY = 2
 
     def serialize(self):
-        return 'collection'
+        return str(self)
