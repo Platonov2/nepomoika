@@ -2,9 +2,12 @@ import Product from '@/models/Product'
 import Vuex from 'vuex'
 import axios from 'axios'
 import Category from '@/models/Category'
+import User from '@/models/User'
 
 export default new Vuex.Store({
   state: {
+    // user: null as unknown as User,
+    adminToken: "" as string,
     category: {} as Category,
     subcategories: [] as Category[],
     products: [] as Product[],
@@ -12,6 +15,8 @@ export default new Vuex.Store({
     editedProduct: {} as Product,
   },
   getters: {
+    // USER: (state) => state.user,
+    ADMIN_TOKEN: (state) => state.adminToken,
     CATEGORY: (state) => state.category,
     SUBCATEGORIES: (state) => state.subcategories,
     PRODUCTS: (state) => state.products,
@@ -19,6 +24,15 @@ export default new Vuex.Store({
     EDITED_PRODUCT: (state) => state.editedProduct,
   },
   mutations: {
+    // SET_USER: (state, [username, token]) => {
+    //   state.user = { 
+    //     username: username,
+    //     token: token,
+    //   };
+    // },
+    SET_ADMIN_TOKEN: (state, adminToken) => {
+      state.adminToken = adminToken;
+    },
     SET_CATEGORY: (state, category) => {
       state.category = category;
     },
@@ -27,7 +41,6 @@ export default new Vuex.Store({
     },
     SET_PRODUCTS: (state, products) => {
       state.products = products;
-      console.log(state.products)
     },
     SET_EDITED_CATEGORY: (state, category) => {
       state.editedCategory = category;
@@ -55,6 +68,41 @@ export default new Vuex.Store({
     }
   },
   actions: {
+    /**      АВТОРИЗАЦИЯ         */
+
+    REGISTER(state, [username, password, role]) {
+      const temp = {
+        username: username,
+        password: password,
+        role: role
+      }
+      return new Promise((resolve, reject) => {
+        axios
+          .post('http://localhost:8099/register', temp)
+          .then((response) => {
+            resolve(response);
+            // this.dispatch('LOGIN', [ username, password ]);
+          })
+          .catch((error) => reject(error));
+      });
+    },
+
+    LOGIN_ADMINISTRATOR(state, [username, password]) {
+      const temp = {
+        username: username,
+        password: password
+      }
+      return new Promise((resolve, reject) => {
+        axios
+          .post('http://localhost:8099/login', temp)
+          .then((response) => {
+            resolve(response);
+            this.commit('SET_ADMIN_TOKEN', response.data);
+          })
+          .catch((error) => reject(error));
+      });
+    },
+
     /**       КАТЕГОРИИ          */
 
     // Получение списка всех категорий

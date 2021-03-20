@@ -1,7 +1,7 @@
 <template>
   <div>
     <ul id="products" v-if="products[0]!=null">
-      <div id="title" v-on:click="alert1(products)">
+      <div id="title">
         Товары в категории
       </div>
       <li class="product" v-for="product in products" v-bind:key="product.product_id">
@@ -53,11 +53,6 @@ export default class ProductList extends Vue {
   name = "";
   price = 0;
   imageLink = "";
-
-  alert1(products) {
-    this.name = "";
-    alert(products[0]);
-  }
 
   get products() {
     return this.$store.getters.PRODUCTS;

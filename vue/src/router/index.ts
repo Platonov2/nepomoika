@@ -7,6 +7,16 @@ const routes: Array<RouteConfig> = [
     component: () => import('../components/Home.vue'),
   },
   {
+    path: '/admin/login',
+    name: 'AdminAuthorization',
+    component: () => import('../components/admin/AdminAuthorization.vue'),
+  },
+  {
+    path: '/admin',
+    name: 'AdminMainPage',
+    component: () => import('../components/admin/AdminMainPage.vue'),
+  },
+  {
     path: '/addCategory',
     name: 'AddCategory',
     component: () => import('../components/AddCategory.vue'),
