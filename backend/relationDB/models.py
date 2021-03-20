@@ -2,9 +2,9 @@ from flask_sqlalchemy import SQLAlchemy
 from backend.server import server
 from sqlalchemy import event
 from backend.queueMessaging.publishers.cahngeMessagePublisher import ChangeMessagePublisher
-from backend.queueMessaging.MessageObject.CUDMessage import CUDMessage
-from backend.queueMessaging.MessageObject.messageType import MessageType
-from backend.queueMessaging.MessageObject.messageCollection import MessageCollection
+from backend.queueMessaging.messageObject.CUDMessage import CUDMessage
+from backend.queueMessaging.messageObject.enum.messageType import MessageType
+from backend.queueMessaging.messageObject.enum.messageCollection import MessageCollection
 
 
 db = SQLAlchemy(server)
@@ -58,7 +58,7 @@ class Product(db.Model):
 
 @event.listens_for(Category, 'after_insert')
 def category_insert(mapper, connection, target):
-    changeMessagePublisher.publish_task(CUDMessage(MessageType.CREATE, MessageCollection.CATEGORY, target).serialize())
+    changeMessagePublisher.publish_task(CUDMessage(MessageType.CREATE, MessageCollection.CATEGORY, target.serialize()).serialize())
 
 
 @event.listens_for(Category, 'after_update')

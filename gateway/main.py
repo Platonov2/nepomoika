@@ -1,4 +1,7 @@
-from flask import Flask
+import re
+
+import requests
+from flask import Flask, Response
 from flask import jsonify
 from flask import request
 from hashlib import sha256
@@ -9,37 +12,30 @@ from relationDB.repositories.userRepository import create_new_user, get_user_by_
 from flask_jwt_extended import create_access_token
 from flask_jwt_extended import get_jwt_identity
 from flask_jwt_extended import jwt_required
-from werkzeug.routing import BaseConverter
+
+SITE_NAME = "http://backend:5000/"
 
 
-class RegexConverter(BaseConverter):
-    def __init__(self, url_map, *items):
-        super(RegexConverter, self).__init__(url_map)
-        self.regex = items[0]
-
-
-server.url_map.converters['regex'] = RegexConverter
-
-#
-@server.route('/admin/')
+@server.route('/admin/<path:path>', methods=["POST", "GET"])
 @jwt_required()
-def admin_access():
+def admin_access(path):
     current_identity = get_jwt_identity()
     user_role = get_user_role(current_identity)
     if user_role.role_name == "admin":
-        return jsonify(logged_in_ass="admin")
+        if request.method == 'GET':
+            resp = requests.get(f'{SITE_NAME}{path}', params=request.args)
+            excluded_headers = ['content-encoding', 'content-length', 'transfer-encoding', 'connection']
+            headers = [(name, value) for (name, value) in resp.raw.headers.items() if name.lower() not in excluded_headers]
+            response = Response(resp.content, resp.status_code, headers)
+            return response
+        if request.method == 'POST':
+            resp = requests.post(f'{SITE_NAME}{path}', json=request.get_json())
+            excluded_headers = ['content - encoding', 'content - length', 'transfer - encoding', 'connection']
+            headers = [(name, value) for (name, value) in resp.raw.headers.items() if name.lower() not in excluded_headers]
+            response = Response(resp.content, resp.status_code, headers)
+            return response
     else:
         return jsonify({"msg": "go away from here"}), 401
-
-# '/<regex("(admin\/)*")>'
-# @server.route('/<regex("(admin\/)*"):uid>-<slug>')
-# def admin_access(uid, slug):
-#     current_identity = get_jwt_identity()
-#     user_role = get_user_role(current_identity)
-#     if user_role.role_name == "admin":
-#         return jsonify(logged_in_as="admin")
-#     else:
-#         return jsonify({"msg": "go away from here"}), 401
 
 
 @server.route("/login", methods=["POST"])

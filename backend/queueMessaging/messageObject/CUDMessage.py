@@ -1,5 +1,5 @@
-from backend.queueMessaging.MessageObject.messageType import MessageType
-from backend.queueMessaging.MessageObject.messageCollection import MessageCollection
+from backend.queueMessaging.messageObject.enum.messageType import MessageType
+from backend.queueMessaging.messageObject.enum.messageCollection import MessageCollection
 
 
 class CUDMessage:
@@ -10,7 +10,7 @@ class CUDMessage:
 
     def serialize(self):
         return {
-            'message_type': self.message_type,
-            'message_collection': self.message_collection,
+            'message_type': self.message_type.serialize(),
+            'message_collection': self.message_collection.serialize(),
             'message_body': self.message_body,
         }
