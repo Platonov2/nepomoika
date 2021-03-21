@@ -2,11 +2,6 @@ import VueRouter, { RouteConfig } from 'vue-router'
 
 const routes: Array<RouteConfig> = [
   {
-    path: '/',
-    name: 'Home',
-    component: () => import('../components/Home.vue'),
-  },
-  {
     path: '/admin/login',
     name: 'AdminAuthorization',
     component: () => import('../components/admin/AdminAuthorization.vue'),
@@ -17,19 +12,14 @@ const routes: Array<RouteConfig> = [
     component: () => import('../components/admin/AdminMainPage.vue'),
   },
   {
-    path: '/addCategory',
-    name: 'AddCategory',
-    component: () => import('../components/AddCategory.vue'),
-  },
-  {
-    path: '/addProduct',
-    name: 'AddProduct',
-    component: () => import('../components/AddProduct.vue'),
-  },
-  {
     path: '/authorization',
     name: 'Authorization',
-    component: () => import('../components/Authorization.vue')
+    component: () => import('../components/market/MarketAuthorization.vue'),
+  },
+  {
+    path: '/',
+    name: 'MarketMainPage',
+    component: () => import('../components/market/MarketMainPage.vue'),
   },
 ]
 
