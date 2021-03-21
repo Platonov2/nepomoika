@@ -1,10 +1,13 @@
+import json
 import threading
 from backend.queueMessaging.connector import Connector
+from backend.queueMessaging.messageHandlers.iMessageHandler import IMessageHandler
 
 
 class ChangeMessageConsumer:
-    def __init__(self):
+    def __init__(self, message_handler: IMessageHandler):
         self.connector = Connector()
+        self.handler = message_handler
 
     def start_consuming_thread(self):
         threading.Thread(target=self.start_consuming).start()
@@ -17,4 +20,5 @@ class ChangeMessageConsumer:
 
     def callback(self, ch, method, properties, body):
         print(body.decode())
+        self.handler.handle(json.loads(body.decode()))
         ch.basic_ack(delivery_tag=method.delivery_tag)

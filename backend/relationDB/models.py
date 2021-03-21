@@ -62,25 +62,25 @@ def category_insert(mapper, connection, target):
 
 
 @event.listens_for(Category, 'after_update')
-def category_insert(mapper, connection, target):
-    changeMessagePublisher.publish_task(CUDMessage(MessageType.UPDATE, MessageCollection.CATEGORY, target).serialize())
+def category_update(mapper, connection, target):
+    changeMessagePublisher.publish_task(CUDMessage(MessageType.UPDATE, MessageCollection.CATEGORY, target.serialize()).serialize())
 
 
 @event.listens_for(Category, 'after_delete')
-def category_insert(mapper, connection, target):
-    changeMessagePublisher.publish_task(CUDMessage(MessageType.DELETE, MessageCollection.CATEGORY, target).serialize())
+def category_delete(mapper, connection, target):
+    changeMessagePublisher.publish_task(CUDMessage(MessageType.DELETE, MessageCollection.CATEGORY, target.serialize()).serialize())
 
 
 @event.listens_for(Product, 'after_insert')
 def product_insert(mapper, connection, target):
-    changeMessagePublisher.publish_task(CUDMessage(MessageType.CREATE, MessageCollection.PRODUCT, target).serialize())
+    changeMessagePublisher.publish_task(CUDMessage(MessageType.CREATE, MessageCollection.PRODUCT, target.serialize()).serialize())
 
 
 @event.listens_for(Product, 'after_update')
-def product_insert(mapper, connection, target):
-    changeMessagePublisher.publish_task(CUDMessage(MessageType.UPDATE, MessageCollection.PRODUCT, target).serialize())
+def product_update(mapper, connection, target):
+    changeMessagePublisher.publish_task(CUDMessage(MessageType.UPDATE, MessageCollection.PRODUCT, target.serialize()).serialize())
 
 
 @event.listens_for(Product, 'after_delete')
-def product_insert(mapper, connection, target):
-    changeMessagePublisher.publish_task(CUDMessage(MessageType.DELETE, MessageCollection.PRODUCT, target).serialize())
+def product_delete(mapper, connection, target):
+    changeMessagePublisher.publish_task(CUDMessage(MessageType.DELETE, MessageCollection.PRODUCT, target.serialize()).serialize())

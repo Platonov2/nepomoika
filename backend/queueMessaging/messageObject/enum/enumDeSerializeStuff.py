@@ -1,5 +1,11 @@
+from backend.queueMessaging.messageObject.enum.messageType import MessageType
+from backend.queueMessaging.messageObject.enum.messageCollection import MessageCollection
 
+PUBLIC_ENUMS = {
+    'MessageType': MessageType,
+    'MessageCollection': MessageCollection
+}
 
-def from_string_to_enum(string: str, enum_class):
-    enum_value = string.split(".")[1]
-    return getattr(enum_class, enum_value)
+def from_string_to_enum(string: str):
+    name, member = string.split(".")
+    return getattr(PUBLIC_ENUMS[name], member)

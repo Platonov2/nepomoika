@@ -13,7 +13,8 @@ from flask_jwt_extended import create_access_token
 from flask_jwt_extended import get_jwt_identity
 from flask_jwt_extended import jwt_required
 
-SITE_NAME = "http://backend:5000/"
+ADMIN_MODULE_ADDRESS = "http://backend:5000/admin/"
+CATALOG_MODULE_ADDRESS = "http://backend:5000/catalog/"
 
 
 @server.route('/admin/<path:path>', methods=["POST", "GET"])
@@ -23,14 +24,30 @@ def admin_access(path):
     user_role = get_user_role(current_identity)
     if user_role.role_name == "admin":
         if request.method == 'GET':
-            resp = requests.get(f'{SITE_NAME}{path}', params=request.args)
+            resp = requests.get(f'{ADMIN_MODULE_ADDRESS}{path}', params=request.args)
             excluded_headers = ['content-encoding', 'content-length', 'transfer-encoding', 'connection']
             headers = [(name, value) for (name, value) in resp.raw.headers.items() if name.lower() not in excluded_headers]
             response = Response(resp.content, resp.status_code, headers)
             return response
         if request.method == 'POST':
-            resp = requests.post(f'{SITE_NAME}{path}', json=request.get_json())
+            resp = requests.post(f'{ADMIN_MODULE_ADDRESS}{path}', json=request.get_json())
             excluded_headers = ['content - encoding', 'content - length', 'transfer - encoding', 'connection']
+            headers = [(name, value) for (name, value) in resp.raw.headers.items() if name.lower() not in excluded_headers]
+            response = Response(resp.content, resp.status_code, headers)
+            return response
+    else:
+        return jsonify({"msg": "go away from here"}), 401
+
+
+@server.route('/catalog/<path:path>', methods=["GET"])
+@jwt_required()
+def catalog_access(path):
+    current_identity = get_jwt_identity()
+    user_role = get_user_role(current_identity)
+    if user_role.role_name == "user" or user_role.role_name == "admin":
+        if request.method == 'GET':
+            resp = requests.get(f'{CATALOG_MODULE_ADDRESS}{path}', params=request.args)
+            excluded_headers = ['content-encoding', 'content-length', 'transfer-encoding', 'connection']
             headers = [(name, value) for (name, value) in resp.raw.headers.items() if name.lower() not in excluded_headers]
             response = Response(resp.content, resp.status_code, headers)
             return response

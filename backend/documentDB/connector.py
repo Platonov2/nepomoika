@@ -1,8 +1,8 @@
-import pymongo
+from pymongo import MongoClient
 
-connection = pymongo.Connection('mongo', 27017)
+client = MongoClient('mongo', 27017, username='root', password='root')
 
-db = connection['ProductCatalog']
+db = client['ProductCatalog']
 
 products_collection = db['products']
 categories_collection = db['categories']

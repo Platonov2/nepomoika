@@ -2,6 +2,10 @@ from backend.server import server
 from backend.relationDB.models import db
 from flask import request, abort, jsonify
 from backend.queueMessaging.consumers.changeMessageConsumer import ChangeMessageConsumer
+from backend.queueMessaging.messageHandlers.CUDMessageHandler import CUDMessageHandler
+
+from backend.documentDB.repositories.categoryRepositoryDocumentDB import CategoryRepositoryDocumentDB
+from backend.documentDB.repositories.productRepositoryDocumentDB import ProductRepositoryDocumentDB
 
 from backend.relationDB.repositories.categoryRepository import create_new_category, get_category_by_id, update_category, delete_category, \
                                                                get_all_root_category, get_children_category
@@ -41,10 +45,70 @@ def root():
     """
 
 
+#####################################################################################################
+# ============================================USER==================================================#
+#####################################################################################################
+
 # -------------------------------------------category------------------------------------------------
 
-@server.route("/category", methods=['POST'])
-def category_post():
+@server.route("/catalog/category", methods=['GET'])
+def catalog_category_get():
+    try:
+        category_id = request.args.get("category_id")
+        category = CategoryRepositoryDocumentDB.get_category_by_id(int(category_id))
+        return jsonify(category)
+    except():
+        abort(400)
+
+
+@server.route("/catalog/category/roots", methods=['GET'])
+def catalog_get_root_categories():
+    try:
+        root_categories = CategoryRepositoryDocumentDB.get_all_root_category()
+        return jsonify([root_categories])
+    except():
+        abort(400)
+
+
+@server.route("/catalog/category/children", methods=['GET'])
+def catalog_get_children_categories():
+    try:
+        category_id = request.args.get("category_id")
+        children_categories = CategoryRepositoryDocumentDB.get_all_children_category(int(category_id))
+        return jsonify([children_categories])
+    except():
+        abort(400)
+
+# -------------------------------------------product------------------------------------------------
+
+@server.route("/catalog/product", methods=['GET'])
+def catalog_product_get():
+    try:
+        product_id = request.args.get("product_id")
+        product = ProductRepositoryDocumentDB.get_product_by_id(int(product_id))
+        return jsonify(product)
+    except():
+        abort(400)
+
+
+@server.route("/catalog/products", methods=['GET'])
+def catalog_products_get():
+    try:
+        category_id = request.args.get("category_id")
+        products = ProductRepositoryDocumentDB.get_products_by_category_id(int(category_id))
+        return jsonify([products])
+    except():
+        abort(400)
+
+
+#####################################################################################################
+# ============================================ADMIN=================================================#
+#####################################################################################################
+
+# -------------------------------------------category------------------------------------------------
+
+@server.route("/admin/category", methods=['POST'])
+def admin_category_post():
     # """
     # Display the home page.
     #
@@ -74,8 +138,8 @@ def category_post():
         abort(400)
 
 
-@server.route("/category", methods=['GET'])
-def category_get():
+@server.route("/admin/category", methods=['GET'])
+def admin_category_get():
     try:
         category_id = request.args.get("category_id")
         category = get_category_by_id(category_id)
@@ -84,8 +148,8 @@ def category_get():
         abort(400)
 
 
-@server.route("/category", methods=['PUT'])
-def category_put():
+@server.route("/admin/category", methods=['PUT'])
+def admin_category_put():
     try:
         message = request.get_json()
 
@@ -99,8 +163,8 @@ def category_put():
         abort(400)
 
 
-@server.route("/category", methods=['DELETE'])
-def category_delete():
+@server.route("/admin/category", methods=['DELETE'])
+def admin_category_delete():
     try:
         category_id = request.args.get("category_id")
         delete_category(category_id)
@@ -109,8 +173,8 @@ def category_delete():
         abort(400)
 
 
-@server.route("/category/roots", methods=['GET'])
-def get_root_categories():
+@server.route("/admin/category/roots", methods=['GET'])
+def admin_get_root_categories():
     try:
         root_categories = get_all_root_category()
         return jsonify([e.serialize() for e in root_categories])
@@ -118,8 +182,8 @@ def get_root_categories():
         abort(400)
 
 
-@server.route("/category/children", methods=['GET'])
-def get_children_categories():
+@server.route("/admin/category/children", methods=['GET'])
+def admin_get_children_categories():
     try:
         category_id = request.args.get("category_id")
         children_categories = get_children_category(category_id)
@@ -131,8 +195,8 @@ def get_children_categories():
 # -------------------------------------------product------------------------------------------------
 
 
-@server.route("/product", methods=['POST'])
-def product_post():
+@server.route("/admin/product", methods=['POST'])
+def admin_product_post():
     try:
         message = request.get_json()[0]
         product_name = message["product_name"]
@@ -145,8 +209,8 @@ def product_post():
         abort(400)
 
 
-@server.route("/product", methods=['GET'])
-def product_get():
+@server.route("/admin/product", methods=['GET'])
+def admin_product_get():
     try:
         product_id = request.args.get("product_id")
         product = get_product_by_id(product_id)
@@ -155,18 +219,18 @@ def product_get():
         abort(400)
 
 
-@server.route("/products", methods=['GET'])
-def products_get():
+@server.route("/admin/products", methods=['GET'])
+def admin_products_get():
     try:
-        product_id = request.args.get("category_id")
-        products = get_products_by_category_id(product_id)
+        category_id = request.args.get("category_id")
+        products = get_products_by_category_id(category_id)
         return jsonify([e.serialize() for e in products])
     except():
         abort(400)
 
 
-@server.route("/product", methods=['PUT'])
-def product_put():
+@server.route("/admin/product", methods=['PUT'])
+def admin_product_put():
     try:
         message = request.get_json()
         product_id = message["product_id"]
@@ -180,8 +244,8 @@ def product_put():
         abort(400)
 
 
-@server.route("/product", methods=['DELETE'])
-def product_delete():
+@server.route("/admin/product", methods=['DELETE'])
+def admin_product_delete():
     try:
         product_id = request.args.get("product_id")
         delete_product(product_id)
@@ -190,8 +254,9 @@ def product_delete():
         abort(400)
 
 
+
 if __name__ == "__main__":
     db.create_all()
-    changeMessageConsumer = ChangeMessageConsumer()
-    # changeMessageConsumer.start_consuming_thread()
+    changeMessageConsumer = ChangeMessageConsumer(CUDMessageHandler())
+    changeMessageConsumer.start_consuming_thread()
     server.run(host='0.0.0.0', port=5000)
