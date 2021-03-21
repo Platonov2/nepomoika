@@ -6,8 +6,8 @@ import User from '@/models/User'
 
 export default new Vuex.Store({
   state: {
-    // user: null as unknown as User,
     adminToken: "" as string,
+    userToken: "" as string,
     category: {} as Category,
     subcategories: [] as Category[],
     products: [] as Product[],
@@ -15,8 +15,8 @@ export default new Vuex.Store({
     editedProduct: {} as Product,
   },
   getters: {
-    // USER: (state) => state.user,
     ADMIN_TOKEN: (state) => state.adminToken,
+    USER_TOKEN: (state) => state.userToken,
     CATEGORY: (state) => state.category,
     SUBCATEGORIES: (state) => state.subcategories,
     PRODUCTS: (state) => state.products,
@@ -24,14 +24,11 @@ export default new Vuex.Store({
     EDITED_PRODUCT: (state) => state.editedProduct,
   },
   mutations: {
-    // SET_USER: (state, [username, token]) => {
-    //   state.user = { 
-    //     username: username,
-    //     token: token,
-    //   };
-    // },
     SET_ADMIN_TOKEN: (state, adminToken) => {
       state.adminToken = adminToken;
+    },
+    SET_USER_TOKEN: (state, userToken) => {
+      state.userToken = userToken;
     },
     SET_CATEGORY: (state, category) => {
       state.category = category;

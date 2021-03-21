@@ -17,21 +17,21 @@
           </div>
         </div>
       </div>
-      <AdminCategoryList id="adminCategoryList"/>
-      <AdminProductList id="adminProductList"/>
+      <MarketCategoryList id="marketCategoryList"/>
+      <MarketProductList id="marketProductList"/>
     </div>
   </div>
 </template>
 
 <script lang="ts">
 import { Component, Vue } from 'vue-property-decorator';
-import AdminCategoryList from './AdminCategoryList.vue';
-import AdminProductList from './AdminProductList.vue';
+import MarketCategoryList from './MarketCategoryList.vue';
+import MarketProductList from './MarketProductList.vue';
 
 @Component({
   components: {
-    AdminCategoryList,
-    AdminProductList,
+    MarketCategoryList,
+    MarketProductList,
   },
 })
 export default class AdminLists extends Vue {
