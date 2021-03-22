@@ -15,7 +15,7 @@ class ChangeMessageConsumer:
     def start_consuming(self):
         self.connector.connect()
         self.connector.perform_setup_queue_infrastructure()
-        self.connector.channel.basic_consume(queue='message_queue', on_message_callback=self.callback)
+        self.connector.channel.basic_consume(queue='message_queue_document_db', on_message_callback=self.callback)
         self.connector.channel.start_consuming()
 
     def callback(self, ch, method, properties, body):

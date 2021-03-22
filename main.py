@@ -61,7 +61,7 @@ def catalog_category_get():
 @server.route("/catalog/category/roots", methods=['GET'])
 def catalog_get_root_categories():
     root_categories = CategoryRepositoryDocumentDB.get_all_root_category()
-    return jsonify([root_categories])
+    return jsonify(root_categories)
 
 
 @server.route("/catalog/category/children", methods=['GET'])
@@ -69,7 +69,7 @@ def catalog_get_children_categories():
     category_id = request.args.get("category_id", None)
     if category_id:
         children_categories = CategoryRepositoryDocumentDB.get_all_children_category(int(category_id))
-        return jsonify([children_categories])
+        return jsonify(children_categories)
     else:
         return jsonify({"msg": "bad request"}), 400
 
@@ -92,7 +92,7 @@ def catalog_products_get():
     category_id = request.args.get("category_id", None)
     if category_id:
         products = ProductRepositoryDocumentDB.get_products_by_category_id(int(category_id))
-        return jsonify([products])
+        return jsonify(products)
     else:
         return jsonify({"msg": "bad request"}), 400
 

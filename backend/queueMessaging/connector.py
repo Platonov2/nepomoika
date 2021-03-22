@@ -16,5 +16,10 @@ class Connector:
     def perform_setup_queue_infrastructure(self):
         if self.channel == "":
             raise BaseException("First you need to use connect method")
+        self.channel.exchange_declare(exchange='CUDMessages', exchange_type='fanout')
 
-        self.channel.queue_declare(queue='message_queue', durable=True)
+        self.channel.queue_declare(queue='message_queue_document_db', durable=True)
+        self.channel.queue_declare(queue='message_queue_card', durable=True)
+
+        self.channel.queue_bind(exchange='CUDMessages', queue='message_queue_document_db')
+        self.channel.queue_bind(exchange='CUDMessages', queue='message_queue_card')

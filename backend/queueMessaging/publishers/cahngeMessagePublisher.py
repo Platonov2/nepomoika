@@ -14,8 +14,8 @@ class ChangeMessagePublisher:
         self.connector.connect()
         self.connector.perform_setup_queue_infrastructure()
         self.connector.channel.basic_publish(
-            exchange='',
-            routing_key='message_queue',
+            exchange='CUDMessages',
+            routing_key='',
             body=message_json,
             properties=pika.BasicProperties(
                 delivery_mode=2,  # make message persistent
