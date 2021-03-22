@@ -39,7 +39,7 @@ export default class AdminMainPage extends Vue {
   }
 
   mounted() {
-    if (this.$store.getters.ADMIN_TOKEN == "") {
+    if (this.$store.getters.TOKEN == "") {
       this.$router.push('/admin/login');
     }
   }

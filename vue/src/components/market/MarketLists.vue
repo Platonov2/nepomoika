@@ -2,7 +2,7 @@
   <div>
     <div id="listsWrap">
       <MarketCategoryList id="marketCategoryList"/>
-      <!-- <MarketProductList id="marketProductList"/> -->
+      <MarketProductList id="marketProductList"/>
     </div>
   </div>
 </template>

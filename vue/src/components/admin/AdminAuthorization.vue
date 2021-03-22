@@ -35,7 +35,7 @@ export default class AdminAuthorization extends Vue {
   error = "";
 
   onAddCategoryClick() {
-    this.$store.dispatch('LOGIN_ADMINISTRATOR', [this.username, this.password])
+    this.$store.dispatch('LOGIN', [this.username, this.password])
       .then(() => this.$router.push('/admin'))
       .catch(() => this.error = "Неверный логин или пароль");
   }

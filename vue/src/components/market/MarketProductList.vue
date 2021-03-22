@@ -6,7 +6,7 @@
       </div>
       <li class="product" v-for="product in products" v-bind:key="product.product_id">
         <div id="leftPart">
-          <div id="productFields" v-if="product.product_id!=editedProduct.product_id">
+          <div id="productFields">
             <div class="productField">
               {{ product.product_name }}
             </div>
@@ -14,30 +14,6 @@
               {{ product.product_price }} Р
             </div>
           </div>
-          <div id="editProductInfo" v-else>
-            <input class="editField" type="text" v-model="name">
-            <input class="editField" type="text" v-model="price">
-          </div>
-        </div>
-        <div id="rightPart">
-          <div id="productButtons">
-            <div id="toEdit" class="editButton" v-on:click="editProduct(product)"
-            v-if="product.product_id!=editedProduct.product_id">
-              Р
-            </div>
-            <div v-else>
-              <div id="saveChanges" class="editButton" v-on:click="saveChanges()">
-                С
-              </div>
-              <div id="rollbackChanges" class="editButton" v-on:click="rollbackChanges()">
-                О
-              </div>
-              <div id="delete" class="editButton" v-on:click="deleteProduct(product.product_id)">
-                У
-              </div>
-            </div>
-          </div>
-          <!-- <image src= "{{ product.image_link }}" alt="not succ"/> -->
         </div>
       </li>
     </ul>
@@ -50,40 +26,9 @@ import Product from '../../models/Product';
 
 @Component
 export default class MarketProductList extends Vue {
-  name = "";
-  price = 0;
-  imageLink = "";
 
   get products() {
     return this.$store.getters.PRODUCTS;
-  }
-
-  get editedProduct() {
-    return this.$store.getters.EDITED_PRODUCT;
-  }
-
-  editProduct(product: Product) {
-    this.$store.commit('SET_EDITED_PRODUCT', product);
-    this.name = product.product_name;
-    this.price = product.product_price;
-    this.imageLink = product.image_link;
-  }
-
-  saveChanges() {
-    this.editedProduct.product_name = this.name;
-    this.editedProduct.product_price = this.price;
-    this.$store.dispatch('UPDATE_PRODUCT', this.editedProduct);
-    this.$store.commit('SET_EDITED_PRODUCT', {});
-    this.rollbackChanges();
-  }
-
-  rollbackChanges() {
-    this.$store.commit('SET_EDITED_PRODUCT', {});
-  }
-
-  deleteProduct(product_id: number) {
-    this.$store.dispatch('DELETE_PRODUCT', product_id);
-    this.rollbackChanges();
   }
 }
 </script>

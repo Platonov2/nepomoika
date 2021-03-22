@@ -5,8 +5,7 @@ import Category from '@/models/Category'
 
 export default new Vuex.Store({
   state: {
-    adminToken: "" as string,
-    userToken: "" as string,
+    token: "" as string,
     rootOfNewCategoryId: 0 as number,
     rootOfNewProductId: 0 as number,
     category: {} as Category,
@@ -16,8 +15,7 @@ export default new Vuex.Store({
     editedProduct: {} as Product,
   },
   getters: {
-    ADMIN_TOKEN: (state) => state.adminToken,
-    USER_TOKEN: (state) => state.userToken,
+    TOKEN: (state) => state.token,
     ROOT_OF_NEW_CATEGORY_ID: (state) => state.rootOfNewCategoryId,
     ROOT_OF_NEW_PRODUCT_ID: (state) => state.rootOfNewProductId,
     CATEGORY: (state) => state.category,
@@ -27,11 +25,9 @@ export default new Vuex.Store({
     EDITED_PRODUCT: (state) => state.editedProduct,
   },
   mutations: {
-    SET_ADMIN_TOKEN: (state, adminToken) => {
-      state.adminToken = adminToken;
-    },
-    SET_USER_TOKEN: (state, userToken) => {
-      state.userToken = userToken;
+    SET_TOKEN: (state, token) => {
+      // console.log(token.access_token);
+      state.token = token.access_token;
     },
     SET_ROOT_OF_NEW_CATEGORY_ID: (state, rootOfNewCategoryId) => {
       state.rootOfNewCategoryId = rootOfNewCategoryId;
@@ -44,9 +40,9 @@ export default new Vuex.Store({
     },
     SET_SUBCATEGORIES: (state, subcategories) => {
       state.subcategories = subcategories;
-      console.log(state.subcategories);
     },
     SET_PRODUCTS: (state, products) => {
+      console.log(products);
       state.products = products;
     },
     SET_EDITED_CATEGORY: (state, category) => {
@@ -102,7 +98,7 @@ export default new Vuex.Store({
       });
     },
 
-    LOGIN_ADMINISTRATOR(state, [username, password]) {
+    LOGIN(state, [username, password]) {
       const temp = {
         username: username,
         password: password
@@ -112,7 +108,7 @@ export default new Vuex.Store({
           .post('http://localhost:8099/login', temp)
           .then((response) => {
             resolve(response);
-            this.commit('SET_ADMIN_TOKEN', response.data);
+            this.commit('SET_TOKEN', response.data);
           })
           .catch((error) => reject(error));
       });
@@ -122,8 +118,14 @@ export default new Vuex.Store({
 
     // Получение списка всех категорий
     ADMIN_GET_ROOT_CATEGORIES: (context) => {
+      console.log(context.getters.TOKEN);
+      const headers = {
+        'Authorization': "Bearer " + context.getters.TOKEN,
+      }
       axios
-        .get('http://localhost:8090/admin/category/roots')
+        .get('http://localhost:8099/admin/category/roots', {
+          headers: headers
+        })
         .then((response) => {
           context.commit('SET_CATEGORY', null);
           context.commit('SET_PRODUCTS', []);
@@ -136,7 +138,7 @@ export default new Vuex.Store({
         .then((response) => {
           context.commit('SET_CATEGORY', null);
           context.commit('SET_PRODUCTS', []);
-          context.commit('SET_SUBCATEGORIES', response.data[0]);
+          context.commit('SET_SUBCATEGORIES', response.data);
         });
     },
     ADMIN_SET_CURRENT_CATEGORY: (context, category_id: number) => {
