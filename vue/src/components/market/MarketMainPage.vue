@@ -24,4 +24,13 @@ export default class AdminMainPage extends Vue {
 
 <style lang="scss">
 
+#marketLists {
+  display: inline-block;
+  vertical-align: top;
+  margin: 40px 20px;
+  margin-left: calc(50% - 270px);
+  box-shadow: 2px 2px 5px rgba(122,122,122,0.5);
+  width: 540px;
+}
+
 </style>

@@ -109,24 +109,6 @@ export default class MarketCategoryList extends Vue {
       color: black;
     }
   }
-
-  #addCategoryButtonWrap {
-    display: inline-block;
-    width: 7%;
-    text-align: right;
-
-    #addCategoryButton, #rollbackAddingCategory {
-      font-size: 24pt;
-      margin-right: 10px;
-      font-weight: bold;
-      color: rgb(51, 51, 51);
-    }
-
-    #addCategoryButton:hover, #rollbackAddingCategory:hover {
-      color: green;
-      cursor: pointer;
-    }
-  }
 }
 
 #subcategories {
@@ -140,61 +122,17 @@ export default class MarketCategoryList extends Vue {
     box-shadow: 2px 2px 5px rgba(122,122,122,0.5);
   }
 
-  #leftPart {
+  #subcategoryName {
     display: inline-block;
-    width: 300px;
-
-    #subcategoryName {
-      display: inline-block;
-      margin: 5px 0px 5px 15px;
-      text-decoration: underline;
-      color: #1a1afc;
-      font-size: 12pt;
-      border: 1px solid white;
-    }
-
-    #editName {
-      display: inline-block;
-      border: 1px solid black;
-    }
-
-    #subcategoryName:hover {
-      cursor: pointer;
-    }
+    margin: 5px 0px 5px 15px;
+    text-decoration: underline;
+    color: #1a1afc;
+    font-size: 12pt;
+    border: 1px solid white;
   }
-  
-  #rightPart {
-    display: inline-block;
-    width: 200px;
-    text-align: right;
 
-    #subcategoryButtons {
-      display: inline-block;
-      margin-right: 15px;
-
-      .editButton {
-        display: inline-block;
-        margin-left: 4px;
-        color: rgb(51, 51, 51);
-        cursor: pointer;
-      }
-
-      #toEdit:hover {
-        color: black;
-      }
-
-      #saveChanges:hover {
-        color: green;
-      }
-
-      #rollbackChanges:hover {
-        color: blue;
-      }
-
-      #delete:hover {
-        color: red;
-      }
-    }
+  #subcategoryName:hover {
+    cursor: pointer;
   }
 }
 
