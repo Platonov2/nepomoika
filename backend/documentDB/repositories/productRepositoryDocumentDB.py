@@ -4,16 +4,16 @@ from backend.documentDB.connector import products_collection
 class ProductRepositoryDocumentDB:
 
     @staticmethod
-    def product_create(insert_data) -> None:
-        products_collection.insert_one(insert_data)
+    def product_create(insert_product) -> None:
+        products_collection.insert_one(insert_product)
 
     @staticmethod
-    def product_update(update_criteria, update_data) -> None:
-        products_collection.update(update_criteria, update_data)
+    def product_update(update_product) -> None:
+        products_collection.update({"product_id": update_product["product_id"]}, update_product)
 
     @staticmethod
-    def product_delete(remove_criteria) -> None:
-        products_collection.remove(remove_criteria)
+    def product_delete(product_id) -> None:
+        products_collection.remove({"product_id": product_id})
 
     @staticmethod
     def get_product_by_id(product_id) -> {}:

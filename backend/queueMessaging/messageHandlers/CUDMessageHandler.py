@@ -13,15 +13,15 @@ class CUDMessageHandler(IMessageHandler):
         if message.message_type == MessageType.CREATE:
             ProductRepositoryDocumentDB.product_create(message.message_body)
         if message.message_type == MessageType.UPDATE:
-            ProductRepositoryDocumentDB.product_update({"product_id": message.message_body["product_id"]}, message.message_body)
+            ProductRepositoryDocumentDB.product_update(message.message_body) # {"product_id": message.message_body["product_id"]}
         if message.message_type == MessageType.DELETE:
-            ProductRepositoryDocumentDB.product_delete(message.message_body) # {"product_id": message.message_body["product_id"]}
+            ProductRepositoryDocumentDB.product_delete(message.message_body["product_id"]) # {"product_id": message.message_body["product_id"]}
 
     def handle_category_cud(self, message: CUDMessage):
         if message.message_type == MessageType.CREATE:
             CategoryRepositoryDocumentDB.category_create(message.message_body)
         if message.message_type == MessageType.UPDATE:
-            CategoryRepositoryDocumentDB.category_update({"category_id": message.message_body["category_id"]}, message.message_body)
+            CategoryRepositoryDocumentDB.category_update(message.message_body) #{"category_id": message.message_body["category_id"]}
         if message.message_type == MessageType.DELETE:
             CategoryRepositoryDocumentDB.category_delete(message.message_body) # {"category_id": message.message_body["category_id"]}
 
