@@ -8,15 +8,19 @@ class CategoryRepositoryDocumentDB:
         if insert_category["root_category_id"] is not None:
             root_category = CategoryRepositoryDocumentDB.get_category_by_id(insert_category["root_category_id"])
             root_category["children_categories_id"].append(insert_category["category_id"])  # TODO странные null при сохранении списка
-            CategoryRepositoryDocumentDB.category_update({"category_id": root_category["category_id"]}, root_category)
+            CategoryRepositoryDocumentDB.category_update(root_category)
         categories_collection.insert_one(insert_category)
 
     @staticmethod
-    def category_update(update_criteria, update_data) -> None:
-        categories_collection.update(update_criteria, update_data)
+    def category_update(update_category) -> None:
+        categories_collection.update({"category_id": update_category["category_id"]}, update_category)
 
     @staticmethod
     def category_delete(remove_category) -> None:
+        if remove_category["root_category_id"] is not None:
+            root_category = CategoryRepositoryDocumentDB.get_category_by_id(remove_category["root_category_id"])
+            root_category["children_categories_id"].remove(remove_category["category_id"])
+            CategoryRepositoryDocumentDB.category_update(root_category)
         categories_collection.remove({"category_id": remove_category["category_id"]})
 
     @staticmethod
