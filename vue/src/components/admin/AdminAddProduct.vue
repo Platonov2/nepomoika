@@ -1,6 +1,6 @@
 <template>
   <div>
-    <div id="AddProduct">
+    <div id="addProductWrap">
       <div id="inputs">
         <div id="title">
           Добавление товара
@@ -17,10 +17,6 @@
           v-model.lazy.trim="product.image_link"
           placeholder="Ссылка на изображение"
         />
-        <input class="input"
-          v-model.lazy.trim="product.product_category_id"
-          placeholder="ID родительской категории"
-        />
         <div id="error">
           {{ error }}
         </div>
@@ -34,41 +30,44 @@
 
 <script lang="ts">
 import { Component, Vue } from 'vue-property-decorator';
-import Product from '../models/Product';
+import Product from '../../models/Product';
 
 @Component
-export default class AddProduct extends Vue {
-    product = {} as Product;
-    error = "";
+export default class AdminAddProduct extends Vue {
+  product = {} as Product;
+  error = "";
 
-    onAddCategoryClick() {
-      if (typeof(this.product.product_name)=="undefined" ||
-          typeof(this.product.product_price)=="undefined" ||
-          this.product.product_price < 0 ||
-          typeof(this.product.image_link)=="undefined" ||
-          typeof(this.product.product_category_id)=="undefined") {
-            this.error = "Заполните все поля корректно";
-      }
-      else {
-        this.$store.
-          dispatch('POST_NEW_PRODUCT', [this.product])
-          .then(() => {
-            this.$router.push('/');
-            this.$store.dispatch('SET_CURRENT_CATEGORY', this.product.product_category_id);
-            this.$store.dispatch('CHOOSE_CATEGORY', this.product.product_category_id);
-          });
-      }
+  get rootOfNewProductId() {
+    return this.$store.getters.ROOT_OF_NEW_PRODUCT_ID;
+  }
+
+  onAddCategoryClick() {
+    if (typeof(this.product.product_name)=="undefined" ||
+        typeof(this.product.product_price)=="undefined" ||
+        this.product.product_price < 0 ||
+        typeof(this.product.image_link)=="undefined") {
+          this.error = "Заполните все поля корректно";
+    }
+    else {
+      this.product.product_category_id = this.rootOfNewProductId;
+      this.$store.
+        dispatch('POST_NEW_PRODUCT', [this.product])
+        .then(() => {
+          this.$store.commit('SET_ROOT_OF_NEW_PRODUCT_ID', 0);
+        });
+    }
   }
 }
 </script>
 
 <style lang="scss">
 
-#AddProduct {
+#addProductWrap {
   display: inline-block;
   box-shadow: 1.5px 1.5px 6px rgb(100, 100, 100);
   vertical-align: top;
   width: 400px;
+  margin-left: 70px;
 
   #title {
     display: block;

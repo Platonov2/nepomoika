@@ -10,6 +10,7 @@
           placeholder="Логин"
         />
         <input class="input"
+          type="password"
           v-model.lazy.trim="password"
           placeholder="Пароль"
         />

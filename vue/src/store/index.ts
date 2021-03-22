@@ -2,12 +2,13 @@ import Product from '@/models/Product'
 import Vuex from 'vuex'
 import axios from 'axios'
 import Category from '@/models/Category'
-import User from '@/models/User'
 
 export default new Vuex.Store({
   state: {
     adminToken: "" as string,
     userToken: "" as string,
+    rootOfNewCategoryId: 0 as number,
+    rootOfNewProductId: 0 as number,
     category: {} as Category,
     subcategories: [] as Category[],
     products: [] as Product[],
@@ -17,6 +18,8 @@ export default new Vuex.Store({
   getters: {
     ADMIN_TOKEN: (state) => state.adminToken,
     USER_TOKEN: (state) => state.userToken,
+    ROOT_OF_NEW_CATEGORY_ID: (state) => state.rootOfNewCategoryId,
+    ROOT_OF_NEW_PRODUCT_ID: (state) => state.rootOfNewProductId,
     CATEGORY: (state) => state.category,
     SUBCATEGORIES: (state) => state.subcategories,
     PRODUCTS: (state) => state.products,
@@ -30,11 +33,18 @@ export default new Vuex.Store({
     SET_USER_TOKEN: (state, userToken) => {
       state.userToken = userToken;
     },
+    SET_ROOT_OF_NEW_CATEGORY_ID: (state, rootOfNewCategoryId) => {
+      state.rootOfNewCategoryId = rootOfNewCategoryId;
+    },
+    SET_ROOT_OF_NEW_PRODUCT_ID: (state, rootOfNewProductId) => {
+      state.rootOfNewProductId = rootOfNewProductId;
+    },
     SET_CATEGORY: (state, category) => {
       state.category = category;
     },
     SET_SUBCATEGORIES: (state, subcategories) => {
       state.subcategories = subcategories;
+      console.log(state.subcategories);
     },
     SET_PRODUCTS: (state, products) => {
       state.products = products;
@@ -44,6 +54,14 @@ export default new Vuex.Store({
     },
     SET_EDITED_PRODUCT: (state, product) => {
       state.editedProduct = product;
+    },
+    ADD_CATEGORY: (state, category) => {
+      category[0].category_id = -1;
+      state.subcategories.push(category[0]);
+    },
+    ADD_PRODUCT: (state, product) => {
+      product[0].product_id = -1;
+      state.products.push(product[0]);
     },
     DELETE_CATEGORY: (state, category_id) => {
       for (let i = 0; i < state.subcategories.length; i++) {
@@ -67,11 +85,11 @@ export default new Vuex.Store({
   actions: {
     /**      АВТОРИЗАЦИЯ         */
 
-    REGISTER(state, [username, password, role]) {
+    REGISTER(state, [username, password]) {
       const temp = {
         username: username,
         password: password,
-        role: role
+        role: 'user'
       }
       return new Promise((resolve, reject) => {
         axios
@@ -103,40 +121,73 @@ export default new Vuex.Store({
     /**       КАТЕГОРИИ          */
 
     // Получение списка всех категорий
-    GET_ROOT_CATEGORIES: (context) => {
+    ADMIN_GET_ROOT_CATEGORIES: (context) => {
       axios
-        .get('http://localhost:8090/category/roots')
+        .get('http://localhost:8090/admin/category/roots')
         .then((response) => {
-          context.commit('SET_CATEGORY', null)
-          context.commit('SET_PRODUCTS', [])
-          context.commit('SET_SUBCATEGORIES', response.data)
+          context.commit('SET_CATEGORY', null);
+          context.commit('SET_PRODUCTS', []);
+          context.commit('SET_SUBCATEGORIES', response.data);
         });
     },
-    SET_CURRENT_CATEGORY: (context, category_id: number) => {
+    MARKET_GET_ROOT_CATEGORIES: (context) => {
       axios
-        .get('http://localhost:8090/category', {
+        .get('http://localhost:8090/catalog/category/roots')
+        .then((response) => {
+          context.commit('SET_CATEGORY', null);
+          context.commit('SET_PRODUCTS', []);
+          context.commit('SET_SUBCATEGORIES', response.data[0]);
+        });
+    },
+    ADMIN_SET_CURRENT_CATEGORY: (context, category_id: number) => {
+      axios
+        .get('http://localhost:8090/admin/category', {
           params: {"category_id": category_id},
         })
         .then((response) => {
           context.commit('SET_CATEGORY', response.data)
         });
     },
-    CHOOSE_CATEGORY: (context, category_id: number) => {
+    MARKET_SET_CURRENT_CATEGORY: (context, category_id: number) => {
       axios
-        .get('http://localhost:8090/category/children', {
+        .get('http://localhost:8090/catalog/category', {
+          params: {"category_id": category_id},
+        })
+        .then((response) => {
+          context.commit('SET_CATEGORY', response.data)
+        });
+    },
+    ADMIN_CHOOSE_CATEGORY: (context, category_id: number) => {
+      axios
+        .get('http://localhost:8090/admin/category/children', {
           params: {"category_id": category_id},
         })
         .then((response) => {
           context.commit('SET_SUBCATEGORIES', response.data);
-          context.dispatch('GET_PRODUCTS_BY_CATEGORY', category_id);
+          context.dispatch('ADMIN_GET_PRODUCTS_BY_CATEGORY', category_id);
+          context.dispatch('ADMIN_SET_CURRENT_CATEGORY', category_id);
+          context.commit('SET_ROOT_OF_NEW_CATEGORY_ID', 0);
+          context.commit('SET_ROOT_OF_NEW_PRODUCT_ID', 0);
+        });
+    },
+    MARKET_CHOOSE_CATEGORY: (context, category_id: number) => {
+      axios
+        .get('http://localhost:8090/catalog/category/children', {
+          params: {"category_id": category_id},
+        })
+        .then((response) => {
+          context.commit('SET_SUBCATEGORIES', response.data);
+          context.dispatch('MARKET_GET_PRODUCTS_BY_CATEGORY', category_id);
+          context.dispatch('MARKET_SET_CURRENT_CATEGORY', category_id);
         });
     },
     // Добавление новой категории
     POST_NEW_CATEGORY(state, category: Category) {
       return new Promise((resolve, reject) => {
         axios
-          .post('http://localhost:8090/category', category)
+          .post('http://localhost:8090/admin/category', category)
           .then((response) => {
+            this.commit('ADD_CATEGORY', category);
             resolve(response);
           })
           .catch((error) => reject(error));
@@ -146,7 +197,7 @@ export default new Vuex.Store({
     UPDATE_CATEGORY(state, category: Category) {
       return new Promise((resolve, reject) => {
         axios
-          .put('http://localhost:8090/category', category)
+          .put('http://localhost:8090/admin/category', category)
           .then((response) => {
             resolve(response);
           })
@@ -159,7 +210,7 @@ export default new Vuex.Store({
 
       return new Promise((resolve, reject) => {
         axios
-          .delete('http://localhost:8090/category', {
+          .delete('http://localhost:8090/admin/category', {
             params: {"category_id": category_id},
           })
           .then((response) => {
@@ -172,9 +223,18 @@ export default new Vuex.Store({
     /**       ТОВАРЫ          */
 
     // Получение всех товаров из категории по его id
-    GET_PRODUCTS_BY_CATEGORY: (context, category_id: number) => {
+    ADMIN_GET_PRODUCTS_BY_CATEGORY: (context, category_id: number) => {
       axios
-        .get('http://localhost:8090/products', {
+        .get('http://localhost:8090/admin/products', {
+          params: {"category_id": category_id},
+        })
+        .then((response) => {
+          context.commit('SET_PRODUCTS', response.data)
+        });
+    },
+    MARKET_GET_PRODUCTS_BY_CATEGORY: (context, category_id: number) => {
+      axios
+        .get('http://localhost:8090/catalog/products', {
           params: {"category_id": category_id},
         })
         .then((response) => {
@@ -185,8 +245,9 @@ export default new Vuex.Store({
     POST_NEW_PRODUCT(state, product: Product) {
       return new Promise((resolve, reject) => {
         axios
-          .post('http://localhost:8090/product', product)
+          .post('http://localhost:8090/admin/product', product)
           .then((response) => {
+            this.commit('ADD_PRODUCT', product);
             resolve(response);
           })
           .catch((error) => reject(error));
@@ -196,7 +257,7 @@ export default new Vuex.Store({
     UPDATE_PRODUCT(state, product: Product) {
       return new Promise((resolve, reject) => {
         axios
-          .put('http://localhost:8090/product', product)
+          .put('http://localhost:8090/admin/product', product)
           .then((response) => {
             resolve(response);
           })
@@ -209,7 +270,7 @@ export default new Vuex.Store({
 
       return new Promise((resolve, reject) => {
         axios
-          .delete('http://localhost:8090/product', {
+          .delete('http://localhost:8090/admin/product', {
             params: {"product_id": product_id},
           })
           .then((response) => {
