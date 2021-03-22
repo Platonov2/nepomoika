@@ -17,7 +17,7 @@ class ProductRepositoryDocumentDB:
 
     @staticmethod
     def get_product_by_id(product_id) -> {}:
-        return products_collection.find_one({"product_id": product_id}, {"_id":0})
+        return products_collection.find_one({"product_id": product_id}, {"_id": 0})
 
     @staticmethod
     def get_products_by_category_id(category_id) -> []:
