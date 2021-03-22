@@ -24,9 +24,6 @@ class Category(db.Model):
 
     def serialize(self):
         children_list = [e.id for e in self.children_categories]
-        # is_leaf = True
-        # if len(children_list) > 0:
-        #     is_leaf = False
         return {
             'category_id': self.id,
             'category_name': self.category_name,
@@ -42,7 +39,7 @@ class Product(db.Model):
     image_link = db.Column(db.String(255), nullable=False)
     product_category_id = db.Column(db.Integer, db.ForeignKey("product_category.id"))
 
-    product_category = db.relationship('Category', backref=db.backref('products', lazy=True))
+    product_category = db.relationship('Category', backref=db.backref('products', lazy=True, cascade="all,delete"))
 
     def serialize(self):
         return {
