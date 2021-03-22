@@ -1,36 +1,28 @@
 <template>
   <div>
-    <ul id="subcategories" v-if="subcategories!=null">
-      <li class="subcategory" v-for="subcategory in subcategories" v-bind:key="subcategory.category_id">
-        <div id="leftPart">
-          <div id="subcategoryName">
-            <div v-on:click="chooseCategory(subcategory)"
-            v-if="subcategory.category_id!=editedCategory.category_id">
-              {{ subcategory.category_name }}
-            </div>
-            <div v-if="subcategory.category_id==editedCategory.category_id">
-              <input id="editName" type="text" v-model="name">
-            </div>
+    <div id="listHeader">
+      <div id="currentCategory" >
+        <div v-if="category==null">
+          <div id="backCursor"></div>
+          <div id="categoryName" v-on:click="test()">
+            Категории
           </div>
         </div>
-        <div id="rightPart">
-          <div id="subcategoryButtons">
-            <div v-if="subcategory.category_id!=editedCategory.category_id">
-              <div v-on:click="editCategory(subcategory)" id="toEdit" class="editButton">
-                Р
-              </div>
-            </div>
-            <div v-else>
-              <div id="saveChanges" class="editButton" v-on:click="saveChanges()">
-                С
-              </div>
-              <div id="rollbackChanges" class="editButton" v-on:click="rollbackChanges()">
-                О
-              </div>
-              <div id="delete" class="editButton" v-on:click="deleteCategory(subcategory.category_id)">
-                У
-              </div>
-            </div>
+        <div v-else id="back">
+          <div id="backCursor" v-on:click="back(category)">
+            &lt;
+          </div>
+          <div id="categoryName" v-on:click="back(category)">
+            {{ category.category_name }}
+          </div>
+        </div>
+      </div>
+    </div>
+    <ul id="subcategories" v-if="subcategories!=null">
+      <li class="subcategory" v-for="subcategory in subcategories" v-bind:key="subcategory.category_id">
+        <div id="subcategoryName">
+          <div v-on:click="chooseCategory(subcategory)">
+            {{ subcategory.category_name }}
           </div>
         </div>
       </li>
@@ -46,47 +38,100 @@ import Category from '../../models/Category';
 export default class MarketCategoryList extends Vue {
   name = "";
 
+  get category() {
+    return this.$store.getters.CATEGORY;
+  }
+
   get subcategories() {
     return this.$store.getters.SUBCATEGORIES;
   }
 
-  get editedCategory() {
-    return this.$store.getters.EDITED_CATEGORY;
+  mounted() {
+    this.$store.commit('SET_CATEGORY', null);
+    if (this.category == null) {
+      this.$store.dispatch('MARKET_GET_ROOT_CATEGORIES');
+    }
+  }
+
+  test() {
+    this.name = "";
+    console.log(this.subcategories); 
+  }
+
+  back(category: Category) {
+    this.$store.commit('SET_PRODUCTS', []);
+    if (category.root_category_id != null) {
+      this.$store.dispatch('MARKET_CHOOSE_CATEGORY', category.root_category_id);
+    }
+    else {
+      this.$store.dispatch('MARKET_GET_ROOT_CATEGORIES');
+    }
+    this.$store.commit('SET_EDITED_CATEGORY', {});
+    this.$store.commit('SET_EDITED_PRODUCT', {});
   }
 
   chooseCategory(category: Category) {
-    this.$store.dispatch('SET_CURRENT_CATEGORY', category.category_id);
-    this.$store.dispatch('CHOOSE_CATEGORY', category.category_id);
-  }
-
-  editCategory(category: Category) {
-    this.$store.commit('SET_EDITED_CATEGORY', category);
-    this.name = category.category_name;
-  }
-
-  saveChanges() {
-    this.editedCategory.category_name = this.name;
-    this.$store.dispatch('UPDATE_CATEGORY', this.editedCategory);
-    this.$store.commit('SET_EDITED_CATEGORY', {});
-    this.rollbackChanges();
-  }
-
-  rollbackChanges() {
-    this.$store.commit('SET_EDITED_CATEGORY', {});
-  }
-
-  deleteCategory(category_id: number) {
-    this.$store.dispatch('DELETE_CATEGORY', category_id);
-    this.rollbackChanges();
+    this.$store.dispatch('MARKET_CHOOSE_CATEGORY', category.category_id);
   }
 }
 </script>
 
 <style lang="scss">
 
+#listHeader {
+  
+  #currentCategory {
+    display: inline-block;
+    width: 93%;
+    color: rgb(51, 51, 51);
+
+    #backCursor {
+      display: inline-block;
+      margin-right: 20px;
+      font-size: 24pt;
+      width: 14px;
+      font-weight: bold;
+    }
+
+    #backCursor:hover {
+      cursor: pointer;
+      color: black;
+    }
+
+    #categoryName {
+      display: inline-block;
+      font-size: 24pt;
+      font-weight: bold;
+    }
+
+    #categoryName:hover {
+      cursor: pointer;
+      color: black;
+    }
+  }
+
+  #addCategoryButtonWrap {
+    display: inline-block;
+    width: 7%;
+    text-align: right;
+
+    #addCategoryButton, #rollbackAddingCategory {
+      font-size: 24pt;
+      margin-right: 10px;
+      font-weight: bold;
+      color: rgb(51, 51, 51);
+    }
+
+    #addCategoryButton:hover, #rollbackAddingCategory:hover {
+      color: green;
+      cursor: pointer;
+    }
+  }
+}
+
 #subcategories {
   list-style-type: none;
-  padding-left: 26px + 10px;
+  padding-left: 0px;
 
   .subcategory {
     display: block;

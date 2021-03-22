@@ -1,5 +1,5 @@
 <template>
-  <div >
+  <div>
     <div id="addCategoryWrap">
       <div id="inputs">
         <div id="title">
@@ -8,10 +8,6 @@
         <input class="input"
           v-model.lazy.trim="category.category_name"
           placeholder="Название категории"
-        />
-        <input class="input"
-          v-model.lazy.trim="category.root_category_id"
-          placeholder="ID родительской категории"
         />
         <div id="error">
           {{ error }}
@@ -26,25 +22,27 @@
 
 <script lang="ts">
 import { Component, Vue } from 'vue-property-decorator';
-import Category from '../models/Category';
+import Category from '../../models/Category';
 
 @Component
-export default class AddCategory extends Vue {
+export default class AdminAddCategory extends Vue {
   category = {} as Category;
   error = "";
 
+  get rootOfNewCategoryId() {
+    return this.$store.getters.ROOT_OF_NEW_CATEGORY_ID;
+  }
+
   onAddCategoryClick() {
-    if (typeof(this.category.category_name)=="undefined" ||
-          typeof(this.category.root_category_id)=="undefined") {
+    if (typeof(this.category.category_name)=="undefined") {
             this.error = "Заполните все поля корректно";
       }
       else {
+        this.category.root_category_id = this.rootOfNewCategoryId;
         this.$store.
           dispatch('POST_NEW_CATEGORY', [this.category])
           .then(() => {
-            this.$router.push('/');
-            this.$store.dispatch('SET_CURRENT_CATEGORY', this.category.root_category_id);
-            this.$store.dispatch('CHOOSE_CATEGORY', this.category.root_category_id);
+            this.$store.commit('SET_ROOT_OF_NEW_CATEGORY_ID', 0);
           });
       }
   }

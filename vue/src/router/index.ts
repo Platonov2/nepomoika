@@ -12,6 +12,16 @@ const routes: Array<RouteConfig> = [
     component: () => import('../components/admin/AdminMainPage.vue'),
   },
   {
+    path: '/admin/addCategory',
+    name: 'AddCategory',
+    component: () => import('../components/AddCategory.vue'),
+  },
+  {
+    path: '/admin/addProduct',
+    name: 'AddProduct',
+    component: () => import('../components/AddProduct.vue'),
+  },
+  {
     path: '/authorization',
     name: 'Authorization',
     component: () => import('../components/market/MarketAuthorization.vue'),
