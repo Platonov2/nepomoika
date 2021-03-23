@@ -27,6 +27,11 @@ const routes: Array<RouteConfig> = [
     component: () => import('../components/market/MarketAuthorization.vue'),
   },
   {
+    path: '/registration',
+    name: 'Registration',
+    component: () => import('../components/market/MarketRegistration.vue'),
+  },
+  {
     path: '/',
     name: 'MarketMainPage',
     component: () => import('../components/market/MarketMainPage.vue'),

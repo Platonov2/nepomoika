@@ -17,7 +17,7 @@ import { Component, Vue } from 'vue-property-decorator';
 export default class MarketHeader extends Vue {
 
   onLogoutClick() {
-    this.$store.commit('SET_USER_TOKEN', "");
+    this.$store.commit('SET_TOKEN', "");
     this.$router.push('/authorization');
   }
 

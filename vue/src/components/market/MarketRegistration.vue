@@ -2,7 +2,7 @@
   <div>
     <div id="authorizationForm">
       <div id="title">
-        Авторизация
+        Регистрация
       </div>
       <div id="inputs">
         <input class="input"
@@ -17,11 +17,8 @@
         <div id="error">
           {{ error }}
         </div>
-        <button id="loginButton" class="input" v-on:click="onLoginClick()">
-          <div id="loginButton-text">Авторизоваться</div>
-        </button>
-        <button id="toRegisterButton" class="input" v-on:click="toRegistration()">
-          <div id="loginButton-text">Создать аккаунт</div>
+        <button id="loginButton" class="input" v-on:click="onRegisterClick()">
+          <div id="loginButton-text">Зарегистрироваться</div>
         </button>
       </div>
     </div>
@@ -37,14 +34,15 @@ export default class MarketAuthorization extends Vue {
   password = "";
   error = "";
 
-  onLoginClick() {
-    this.$store.dispatch('LOGIN', [this.username, this.password])
-      .then(() => this.$router.push('/'))
-      .catch(() => this.error = "Неверный логин или пароль");
-  }
-
-  toRegistration() {
-    this.$router.push('/registration');
+  onRegisterClick() {
+    if (this.username=="" || this.password=="") {
+      this.error = "Заполните все поля";
+    }
+    else {
+      this.$store.dispatch('REGISTER', [this.username, this.password])
+        .then(() => this.$router.push('/'))
+        .catch(() => this.error = "Такой пользователь уже существует");
+    }
   }
 }
 </script>

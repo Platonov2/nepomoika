@@ -26,7 +26,6 @@ export default new Vuex.Store({
   },
   mutations: {
     SET_TOKEN: (state, token) => {
-      // console.log(token.access_token);
       state.token = token.access_token;
     },
     SET_ROOT_OF_NEW_CATEGORY_ID: (state, rootOfNewCategoryId) => {
@@ -92,7 +91,7 @@ export default new Vuex.Store({
           .post('http://localhost:8099/register', temp)
           .then((response) => {
             resolve(response);
-            // this.dispatch('LOGIN', [ username, password ]);
+            this.dispatch('LOGIN', [ username, password ]);
           })
           .catch((error) => reject(error));
       });

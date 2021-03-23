@@ -13,6 +13,11 @@
             {{ product.product_price }} Р
           </div>
         </div>
+        <div id="buttons">
+          <button id="addToCart" v-on:click="addToCart(product)">
+            Купить
+          </button>
+        </div>
       </li>
     </ul>
   </div>
@@ -48,29 +53,30 @@ export default class MarketProductList extends Vue {
     width: 500px;
     margin: 5px 0px;
     box-shadow: 2px 2px 5px rgba(122,122,122,0.5);
-  }
 
-  #productFields {
-    display: inline-block;
-    margin: 5px 0px 5px 15px;
-    font-size: 12pt;
-    border: 1px solid white;
+    #productFields {
+      display: inline-block;
+      margin: 5px 0px 5px 15px;
+      font-size: 14pt;
+      border: 1px solid white;
+      width: 400px;
 
-    .productField {
-      margin: 5px 0px;
+      .productField {
+        margin: 5px 0px;
+      }
+    }
+
+    #buttons {
+      display: inline-block;
+      vertical-align: bottom;
+      margin-bottom: 10px;
+
+      #addToCart {
+        font-size: 12pt;
+      }
     }
   }
 
-  .editField {
-    display: inline-block;
-    border: 1px solid black;
-    margin: 5px 0px 5px 15px;
-    font-size: 10pt;
-  }
-
-  #subcategoryName:hover {
-    cursor: pointer;
-  }
 }
 
 </style>

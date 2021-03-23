@@ -19,6 +19,11 @@ import MarketLists from './MarketLists.vue';
   },
 })
 export default class AdminMainPage extends Vue {
+  mounted() {
+    if (this.$store.getters.TOKEN == "") {
+      this.$router.push('/authorization');
+    }
+  }
 }
 </script>
 

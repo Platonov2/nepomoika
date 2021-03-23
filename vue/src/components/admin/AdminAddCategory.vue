@@ -35,16 +35,16 @@ export default class AdminAddCategory extends Vue {
 
   onAddCategoryClick() {
     if (typeof(this.category.category_name)=="undefined") {
-            this.error = "Заполните все поля корректно";
-      }
-      else {
-        this.category.root_category_id = this.rootOfNewCategoryId;
-        this.$store.
-          dispatch('POST_NEW_CATEGORY', [this.category])
-          .then(() => {
-            this.$store.commit('SET_ROOT_OF_NEW_CATEGORY_ID', 0);
-          });
-      }
+      this.error = "Заполните все поля корректно";
+    }
+    else {
+      this.category.root_category_id = this.rootOfNewCategoryId;
+      this.$store.
+        dispatch('POST_NEW_CATEGORY', [this.category])
+        .then(() => {
+          this.$store.commit('SET_ROOT_OF_NEW_CATEGORY_ID', 0);
+        });
+    }
   }
 }
 </script>
