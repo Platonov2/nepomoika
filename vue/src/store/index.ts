@@ -15,7 +15,13 @@ export default new Vuex.Store({
     editedProduct: {} as Product,
   },
   getters: {
-    TOKEN: (state) => state.token,
+    TOKEN: (state) => {
+      const results = document.cookie.match(/token=(.+?)(;|$)/);
+      if (results != null) {
+        return results[1];
+      }
+      else "";
+    },
     ROOT_OF_NEW_CATEGORY_ID: (state) => state.rootOfNewCategoryId,
     ROOT_OF_NEW_PRODUCT_ID: (state) => state.rootOfNewProductId,
     CATEGORY: (state) => state.category,
@@ -26,7 +32,7 @@ export default new Vuex.Store({
   },
   mutations: {
     SET_TOKEN: (state, token) => {
-      state.token = token.access_token;
+      document.cookie = "token=" + token;
     },
     SET_ROOT_OF_NEW_CATEGORY_ID: (state, rootOfNewCategoryId) => {
       state.rootOfNewCategoryId = rootOfNewCategoryId;
@@ -107,7 +113,7 @@ export default new Vuex.Store({
           .post('http://localhost:8099/login', temp)
           .then((response) => {
             resolve(response);
-            this.commit('SET_TOKEN', response.data);
+            this.commit('SET_TOKEN', response.data.access_token);
           })
           .catch((error) => reject(error));
       });
