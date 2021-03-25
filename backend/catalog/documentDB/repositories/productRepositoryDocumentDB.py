@@ -1,4 +1,4 @@
-from backend.documentDB.connector import products_collection
+from backend.catalog.documentDB.connector import products_collection
 
 
 class ProductRepositoryDocumentDB:

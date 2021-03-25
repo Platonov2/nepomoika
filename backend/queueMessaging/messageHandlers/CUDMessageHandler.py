@@ -1,8 +1,8 @@
 from backend.queueMessaging.messageObject.CUDMessage import CUDMessage
 from backend.queueMessaging.messageObject.enum.messageType import MessageType
 from backend.queueMessaging.messageObject.enum.messageCollection import MessageCollection
-from backend.documentDB.repositories.productRepositoryDocumentDB import ProductRepositoryDocumentDB
-from backend.documentDB.repositories.categoryRepositoryDocumentDB import CategoryRepositoryDocumentDB
+from backend.catalog.documentDB.repositories.productRepositoryDocumentDB import ProductRepositoryDocumentDB
+from backend.catalog.documentDB.repositories.categoryRepositoryDocumentDB import CategoryRepositoryDocumentDB
 from backend.queueMessaging.messageObject.enum.enumDeSerializeStuff import from_string_to_enum
 from backend.queueMessaging.messageHandlers.iMessageHandler import IMessageHandler
 

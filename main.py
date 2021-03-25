@@ -1,14 +1,16 @@
 from backend.server import server
-from backend.relationDB.models import db
-from flask import request, abort, jsonify
+from backend.admin.relationDB.models import db
+from flask import request, jsonify
+from functools import wraps
+
 from backend.queueMessaging.consumers.changeMessageConsumer import ChangeMessageConsumer
 from backend.queueMessaging.messageHandlers.CUDMessageHandler import CUDMessageHandler
 
-from backend.documentDB.repositories.categoryRepositoryDocumentDB import CategoryRepositoryDocumentDB
-from backend.documentDB.repositories.productRepositoryDocumentDB import ProductRepositoryDocumentDB
+from backend.catalog.documentDB.repositories.categoryRepositoryDocumentDB import CategoryRepositoryDocumentDB
+from backend.catalog.documentDB.repositories.productRepositoryDocumentDB import ProductRepositoryDocumentDB
 
-from backend.relationDB.repositories.categoryRepositoryRelationDB import CategoryRepositoryRelationDB
-from backend.relationDB.repositories.productRepositoryRelationDB import ProductRepositoryRelationDB
+from backend.admin.relationDB.repositories.categoryRepositoryRelationDB import CategoryRepositoryRelationDB
+from backend.admin.relationDB.repositories.productRepositoryRelationDB import ProductRepositoryRelationDB
 
 
 @server.route("/")
@@ -42,11 +44,35 @@ def root():
     """
 
 
+
+# def check_role_header(role_name):
+#     def decorator(function):
+#         @wraps(function)
+#         def wrapper(text):
+#             attr_string = " ".join(f"{k}='{v}'" for k, v in attrs.items())
+#             text = f"<{tag} {attr_string}>{text}</{tag}>"
+#             return function(text)
+#         return wrapper
+#     return decorator
+# Defining header check decorator
+def admin_only(f):
+    @wraps(f)
+    def decorated_function(*args, **kwargs):
+        header = request.headers.get('x-user-role', None)
+        if header:
+            if request.headers.get('x-user-role') != "admin":
+                return jsonify({"msg": "wrong permissions"}), 401
+        else:
+            return jsonify({"msg": "bad user role header"}), 400
+        return f(*args, **kwargs)
+    return decorated_function
+
 #####################################################################################################
 # ============================================USER==================================================#
 #####################################################################################################
 
 # -------------------------------------------category------------------------------------------------
+
 
 @server.route("/catalog/category", methods=['GET'])
 def catalog_category_get():
@@ -104,6 +130,7 @@ def catalog_products_get():
 # -------------------------------------------category------------------------------------------------
 
 @server.route("/admin/category", methods=['POST'])
+# @admin_only
 def admin_category_post():
     # """
     # Display the home page.
@@ -134,6 +161,7 @@ def admin_category_post():
 
 
 @server.route("/admin/category", methods=['GET'])
+# @admin_only
 def admin_category_get():
     category_id = request.args.get("category_id", None)
     if category_id:
@@ -144,6 +172,7 @@ def admin_category_get():
 
 
 @server.route("/admin/category", methods=['PUT'])
+# @admin_only
 def admin_category_put():
     category_id = request.json.get("category_id", None)
     category_name = request.json.get("category_name", None)
@@ -156,6 +185,7 @@ def admin_category_put():
 
 
 @server.route("/admin/category", methods=['DELETE'])
+# @admin_only
 def admin_category_delete():
     category_id = request.args.get("category_id", None)
     if category_id:
@@ -166,12 +196,14 @@ def admin_category_delete():
 
 
 @server.route("/admin/category/roots", methods=['GET'])
+# @admin_only
 def admin_get_root_categories():
     root_categories = CategoryRepositoryRelationDB.get_all_root_category()
     return jsonify([e.serialize() for e in root_categories])
 
 
 @server.route("/admin/category/children", methods=['GET'])
+# @admin_only
 def admin_get_children_categories():
     category_id = request.args.get("category_id", None)
     if category_id:
@@ -185,6 +217,7 @@ def admin_get_children_categories():
 
 
 @server.route("/admin/product", methods=['POST'])
+# @admin_only
 def admin_product_post():
     message = request.get_json()[0]
     product_name = message["product_name"]
@@ -199,6 +232,7 @@ def admin_product_post():
 
 
 @server.route("/admin/product", methods=['GET'])
+# @admin_only
 def admin_product_get():
     product_id = request.args.get("product_id", None)
     if product_id:
@@ -209,6 +243,7 @@ def admin_product_get():
 
 
 @server.route("/admin/products", methods=['GET'])
+# @admin_only
 def admin_products_get():
     category_id = request.args.get("category_id", None)
     if category_id:
@@ -219,6 +254,7 @@ def admin_products_get():
 
 
 @server.route("/admin/product", methods=['PUT'])
+# @admin_only
 def admin_product_put():
     product_id = request.json.get("product_id", None)
     product_name = request.json.get("product_name", None)
@@ -233,11 +269,25 @@ def admin_product_put():
 
 
 @server.route("/admin/product", methods=['DELETE'])
+# @admin_only
 def admin_product_delete():
     product_id = request.args.get("product_id", None)
     if product_id:
         ProductRepositoryRelationDB.delete_product(product_id)
         return "succ", 200
+    else:
+        return jsonify({"msg": "bad request"}), 400
+
+# -------------------------------------------shopping cart util reuests------------------------------------------------
+
+
+@server.route("/cart/product", methods=['GET'])
+# @admin_only
+def cart_product_get():
+    product_id = request.args.get("product_id", None)
+    if product_id:
+        product = ProductRepositoryRelationDB.get_product_by_id(product_id)
+        return product.serialize()
     else:
         return jsonify({"msg": "bad request"}), 400
 

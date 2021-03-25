@@ -1,4 +1,4 @@
-from backend.documentDB.connector import categories_collection
+from backend.catalog.documentDB.connector import categories_collection
 
 
 class CategoryRepositoryDocumentDB:

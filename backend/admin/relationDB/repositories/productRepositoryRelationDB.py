@@ -1,4 +1,4 @@
-from backend.relationDB.models import db, Product
+from backend.admin.relationDB.models import db, Product
 
 
 class ProductRepositoryRelationDB:

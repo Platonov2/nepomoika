@@ -1,9 +1,10 @@
 FROM python:3.8-slim
 
-COPY . .
+COPY requirements.txt ./requirements.txt
 
 RUN pip install -r ./requirements.txt
 
+COPY . .
 #ENV POSTGRES_HOST=${POSTGRES_HOST}
 #ENV POSTGRES_PORT=${POSTGRES_PORT}
 #ENV POSTGRES_USER=${POSTGRES_USER}

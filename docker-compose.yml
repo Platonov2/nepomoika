@@ -69,6 +69,22 @@ services:
       - POSTGRES_DB=${POSTGRES_DB}
     command: ["python", "./main.py"]
 
+  cart:
+    build:
+      context: ./shoppingCart
+      dockerfile: Dockerfile
+    ports:
+      - "8098:5000"
+    depends_on:
+      rabbit:
+        condition: service_healthy
+      mongo:
+        condition: service_started
+    environment:
+      - RABBITMQ_DEFAULT_USER=${RABBITMQ_DEFAULT_USER}
+      - RABBITMQ_DEFAULT_PASS=${RABBITMQ_DEFAULT_PASS}
+    command: ["python", "./main.py"]
+
   gateway:
     build:
       context: ./gateway
@@ -80,6 +96,7 @@ services:
         condition: service_started
     environment:
       - JWT_SECRET_KEY=${JWT_SECRET_KEY}
+      - PASS_SALT=${PASS_SALT}
       - POSTGRES_HOST=${POSTGRES_HOST}
       - POSTGRES_PORT=${POSTGRES_PORT}
       - POSTGRES_USER=${POSTGRES_USER}

@@ -1,4 +1,4 @@
-from backend.relationDB.models import db, Category
+from backend.admin.relationDB.models import db, Category
 
 
 class CategoryRepositoryRelationDB:

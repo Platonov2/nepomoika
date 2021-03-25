@@ -55,29 +55,41 @@ class Product(db.Model):
 
 @event.listens_for(Category, 'after_insert')
 def category_insert(mapper, connection, target):
-    changeMessagePublisher.publish_task(CUDMessage(MessageType.CREATE, MessageCollection.CATEGORY, target.serialize()).serialize())
+    changeMessagePublisher.publish_task(CUDMessage(MessageType.CREATE,
+                                                   MessageCollection.CATEGORY,
+                                                   target.serialize()).serialize(), only_for_catalog=True)
 
 
 @event.listens_for(Category, 'after_update')
 def category_update(mapper, connection, target):
-    changeMessagePublisher.publish_task(CUDMessage(MessageType.UPDATE, MessageCollection.CATEGORY, target.serialize()).serialize())
+    changeMessagePublisher.publish_task(CUDMessage(MessageType.UPDATE,
+                                                   MessageCollection.CATEGORY,
+                                                   target.serialize()).serialize(), only_for_catalog=True)
 
 
 @event.listens_for(Category, 'after_delete')
 def category_delete(mapper, connection, target):
-    changeMessagePublisher.publish_task(CUDMessage(MessageType.DELETE, MessageCollection.CATEGORY, target.serialize()).serialize())
+    changeMessagePublisher.publish_task(CUDMessage(MessageType.DELETE,
+                                                   MessageCollection.CATEGORY,
+                                                   target.serialize()).serialize(), only_for_catalog=True)
 
 
 @event.listens_for(Product, 'after_insert')
 def product_insert(mapper, connection, target):
-    changeMessagePublisher.publish_task(CUDMessage(MessageType.CREATE, MessageCollection.PRODUCT, target.serialize()).serialize())
+    changeMessagePublisher.publish_task(CUDMessage(MessageType.CREATE,
+                                                   MessageCollection.PRODUCT,
+                                                   target.serialize()).serialize(), only_for_catalog=True)
 
 
 @event.listens_for(Product, 'after_update')
 def product_update(mapper, connection, target):
-    changeMessagePublisher.publish_task(CUDMessage(MessageType.UPDATE, MessageCollection.PRODUCT, target.serialize()).serialize())
+    changeMessagePublisher.publish_task(CUDMessage(MessageType.UPDATE,
+                                                   MessageCollection.PRODUCT,
+                                                   target.serialize()).serialize(), only_for_catalog=False)
 
 
 @event.listens_for(Product, 'after_delete')
 def product_delete(mapper, connection, target):
-    changeMessagePublisher.publish_task(CUDMessage(MessageType.DELETE, MessageCollection.PRODUCT, target.serialize()).serialize())
+    changeMessagePublisher.publish_task(CUDMessage(MessageType.DELETE,
+                                                   MessageCollection.PRODUCT,
+                                                   target.serialize()).serialize(), only_for_catalog=False)
