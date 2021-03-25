@@ -8,11 +8,15 @@
 import { Component, Vue } from 'vue-property-decorator';
 import Vuex from 'vuex';
 import VueRouter, { RouteConfig } from 'vue-router';
+import VueCoockie from 'vue-cookie';
+
 Vue.use(Vuex)
 Vue.use(VueRouter)
+Vue.use(VueCoockie)
 
 @Component
-export default class App extends Vue {}
+export default class App extends Vue {
+}
 </script>
 
 <style lang="scss">

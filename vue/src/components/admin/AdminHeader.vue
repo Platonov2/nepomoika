@@ -17,7 +17,7 @@ import { Component, Vue } from 'vue-property-decorator';
 export default class AdminHeader extends Vue {
 
   onLogoutClick() {
-    this.$store.commit('SET_ADMIN_TOKEN', "");
+    this.$store.commit('SET_TOKEN', "");
     this.$router.push('/admin/login');
   }
 
