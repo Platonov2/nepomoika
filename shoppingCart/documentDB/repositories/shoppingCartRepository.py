@@ -52,7 +52,10 @@ class ShoppingCartRepository:
     @staticmethod
     def get_product_card(user_id) -> ShoppingCart:
         cart_form_mongo = shopping_cart_collection.find_one({"user_id": user_id}, {"_id": 0})
+        if cart_form_mongo is None:
+            return None
         return ShoppingCart(cart_form_mongo["user_id"], cart_form_mongo["product_dict"])
+
 
     # db.ShoppingCart.find( {product_list.2: {$exists: 1}})
     # db.ShoppingCart.find_one( {"user_id": 2})
