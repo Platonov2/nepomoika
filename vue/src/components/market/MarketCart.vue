@@ -7,18 +7,18 @@
           Товары в корзине
         </div>
         <li class="product" v-for="product in cartProducts" v-bind:key="product.product_id">
-          <div class="productFields">
+          <div id="productFields">
             <div class="productField">
               {{ product.product_name }}
             </div>
             <div class="productField">
               {{ product.product_price }} Р
             </div>
-            <div id="buttons">
-              <button id="removeProduct" v-on:click="removeProduct(product.product_id)">
-                Убрать
-              </button>
             </div>
+          <div id="buttons">
+          <button id="removeProduct" v-on:click="removeProduct(product.product_id)">
+            Убрать
+          </button>
           </div>
         </li>
       </ul>
@@ -46,7 +46,6 @@ export default class MarketCart extends Vue {
   }
 
   removeProduct(product_id: number) {
-    console.log(product_id);
     this.$store.dispatch("DELETE_CART_PRODUCT", product_id);
   }
 }

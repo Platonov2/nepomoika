@@ -14,7 +14,7 @@
           </div>
         </div>
         <div id="buttons">
-          <button id="addToCart" v-on:click="addToCart(product)">
+          <button id="addToCart" v-on:click="addToCart(product.product_id)">
             Купить
           </button>
         </div>
@@ -31,6 +31,11 @@ export default class MarketProductList extends Vue {
 
   get products() {
     return this.$store.getters.PRODUCTS;
+  }
+
+  addToCart(product_id: number) {
+    alert("Добавлено в корзину");
+    this.$store.dispatch("ADD_CART_PRODUCT", product_id);
   }
 }
 </script>

@@ -1,13 +1,20 @@
 <template>
   <div>
     <div id="wrap">
-      <div id="buttons">
-        <button id="cart" class="headerButton" v-on:click="onCartClick()">
-          <div id="cart-text">Корзина</div>
+      <div id="leftPart">
+        <button id="catalog" class="headerButton" v-on:click="onCatalogClick()">
+          <div id="catalog-text">Каталог</div>
         </button>
-        <button id="logout" class="headerButton" v-on:click="onLogoutClick()">
-          <div id="logout-text">Выйти</div>
-        </button>
+      </div>
+      <div id="rightPart">
+        <div id="buttons">
+          <button id="cart" class="headerButton" v-on:click="onCartClick()">
+            <div id="cart-text">Корзина</div>
+          </button>
+          <button id="logout" class="headerButton" v-on:click="onLogoutClick()">
+            <div id="logout-text">Выйти</div>
+          </button>
+        </div>
       </div>
     </div>
   </div>
@@ -18,6 +25,10 @@ import { Component, Vue } from 'vue-property-decorator';
 
 @Component
 export default class MarketHeader extends Vue {
+
+  onCatalogClick() {
+    this.$router.push('/');
+  }
 
   onCartClick() {
     this.$router.push('/cart');
@@ -38,18 +49,35 @@ export default class MarketHeader extends Vue {
   height: 100px;
   background-color: burlywood;
 
-  #buttons {
-    display: block;
-    text-align: right;
-    padding-top: 30px;
-    padding-right: 50px;
-    font-size: 20pt;
+  #leftPart {
+    display: inline-block;
+    width: 15%;
 
-    .headerButton {
-      width: 100px;
-      height: 30px;
-      margin-right: 15px;
-      cursor: pointer;
+    #catalog {
+      display: inline-block;
+      margin-top: 30px;
+      margin-left: 50px;
+    }
+  }
+
+  .headerButton {
+    display: inline-block;
+    width: 100px;
+    height: 30px;
+    margin-right: 15px;
+    cursor: pointer;
+  }
+  #rightPart {
+    display: inline-block;
+    width: 85%;
+    text-align: right;
+
+    #buttons {
+      display: inline-block;
+      text-align: right;
+      padding-top: 30px;
+      padding-right: 50px;
+      font-size: 20pt;
     }
   }
 }

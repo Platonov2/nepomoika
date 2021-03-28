@@ -15,6 +15,7 @@ export default new Vuex.Store({
     editedProduct: {} as Product,
     cartProducts: [] as Product[],
     finalPrice: 0 as number,
+    cartList: [ 0 ] as number[],
   },
   getters: {
     TOKEN: (state) => {
@@ -33,10 +34,12 @@ export default new Vuex.Store({
     EDITED_PRODUCT: (state) => state.editedProduct,
     CART_PRODUCTS: (state) => state.cartProducts,
     FINAL_PRICE: (state) => state.finalPrice,
+    CART_LIST: (state) => state.cartList,
   },
   mutations: {
     SET_TOKEN: (state, token) => {
       document.cookie = "token=" + token;
+      console.log(document.cookie.match(/token=(.+?)(;|$)/));
     },
     SET_ROOT_OF_NEW_CATEGORY_ID: (state, rootOfNewCategoryId) => {
       state.rootOfNewCategoryId = rootOfNewCategoryId;
@@ -99,6 +102,9 @@ export default new Vuex.Store({
     },
     SET_FINAL_PRICE: (state, finalPrice) => {
       state.finalPrice = finalPrice;
+    },
+    ADD_TO_CART_LIST: (state, newProductId) => {
+      state.cartList.push(newProductId);
     },
   },
   actions: {
@@ -319,22 +325,30 @@ export default new Vuex.Store({
           context.commit('SET_FINAL_PRICE', response.data.sum);
         });
     },
-    DELETE_CART_PRODUCT(context, product_id: number) {
-      const headers = {
-        'Authorization': "Bearer " + context.getters.TOKEN
-      }
-      console.log(product_id);
-      console.log(context.getters.TOKEN);
-      console.log(headers);
+    ADD_CART_PRODUCT(context, product_id: number) {
       return new Promise((resolve, reject) => {
         axios
-          .post('http://localhost:8099/cart/remove', {
+          .post('http://localhost:8099/cart/add', null, {
+            headers: {
+              Authorization: 'Bearer ' + context.getters.TOKEN
+            },
             params: {"product_id": product_id},
-          // },
-          // { 
-            // headers: {
-            //   Authorization: 'Bearer ' + context.getters.TOKEN
-            // }
+          })
+          .then((response) => {
+            context.commit('ADD_TO_CART_LIST', product_id);
+            resolve(response);
+          })
+          .catch((error) => reject(error));
+      });
+    },
+    DELETE_CART_PRODUCT(context, product_id: number) {
+      return new Promise((resolve, reject) => {
+        axios
+          .post('http://localhost:8099/cart/remove', null, {
+            headers: {
+              Authorization: 'Bearer ' + context.getters.TOKEN
+            },
+            params: {"product_id": product_id},
           })
           .then((response) => {
             context.commit('DELETE_CART_PRODUCT', product_id);
