@@ -76,7 +76,6 @@ export default class MarketProductList extends Vue {
       }
     }
   }
-
 }
 
 </style>

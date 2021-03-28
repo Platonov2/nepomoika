@@ -13,6 +13,8 @@ export default new Vuex.Store({
     products: [] as Product[],
     editedCategory: {} as Category,
     editedProduct: {} as Product,
+    cartProducts: [] as Product[],
+    finalPrice: 0 as number,
   },
   getters: {
     TOKEN: (state) => {
@@ -29,6 +31,8 @@ export default new Vuex.Store({
     PRODUCTS: (state) => state.products,
     EDITED_CATEGORY: (state) => state.editedCategory,
     EDITED_PRODUCT: (state) => state.editedProduct,
+    CART_PRODUCTS: (state) => state.cartProducts,
+    FINAL_PRICE: (state) => state.finalPrice,
   },
   mutations: {
     SET_TOKEN: (state, token) => {
@@ -81,7 +85,13 @@ export default new Vuex.Store({
           break;
         }
       }
-    }
+    },
+    SET_CART_PRODUCTS: (state, cartProducts) => {
+      state.cartProducts = cartProducts;
+    },
+    SET_FINAL_PRICE: (state, finalPrice) => {
+      state.cartProducts = finalPrice;
+    },
   },
   actions: {
     /**      АВТОРИЗАЦИЯ         */
@@ -141,6 +151,7 @@ export default new Vuex.Store({
       axios
         .get('http://localhost:8090/catalog/category/roots')
         .then((response) => {
+          console.log(response.data)
           context.commit('SET_CATEGORY', null);
           context.commit('SET_PRODUCTS', []);
           context.commit('SET_SUBCATEGORIES', response.data);
@@ -285,6 +296,25 @@ export default new Vuex.Store({
           })
           .catch((error) => reject(error));
       });
+    },
+
+    /**       КОРЗИНА          */
+
+    GET_CART_PRODUCTS: (context) => {
+      const headers = {
+        'Authorization': "Bearer " + context.getters.TOKEN,
+      }
+      axios
+        .get('http://localhost:8099/cart/get', {
+          headers: headers
+        })
+        .then((response) => {
+          // console.log(response.data);
+          console.log(response.data.product_dict);
+          console.log(response.data.sum);
+          context.commit('SET_CART_PRODUCTS', response.data.product_dict);
+          context.commit('SET_FINAL_PRICE', response.data.sum);
+        });
     },
   },
   modules: {

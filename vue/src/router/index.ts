@@ -32,6 +32,11 @@ const routes: Array<RouteConfig> = [
     component: () => import('../components/market/MarketRegistration.vue'),
   },
   {
+    path: '/cart',
+    name: 'Cart',
+    component: () => import('../components/market/MarketCart.vue'),
+  },
+  {
     path: '/',
     name: 'MarketMainPage',
     component: () => import('../components/market/MarketMainPage.vue'),
