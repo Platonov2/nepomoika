@@ -36,7 +36,7 @@ def get_shopping_cart():
     user_id = request.headers.get('x-user-id', None)
     if user_id:
         shopping_cart = ShoppingCartRepository.get_product_card(user_id)
-        return shopping_cart.serialize(), 200
+        return shopping_cart.serialize_with_list_of_products_and_total_price(), 200
     else:
         return jsonify({"msg": "Bad request"}), 400
 

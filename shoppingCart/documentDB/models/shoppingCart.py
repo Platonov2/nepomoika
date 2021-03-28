@@ -10,10 +10,13 @@ class ShoppingCart:
         for key in self.product_dict.keys():
             self.sum += self.product_dict[key]["product_price"]
 
-    def serialize(self):
+    def serialize_with_list_of_products_and_total_price(self):
+        products = []
+        for item in self.product_dict.items():
+            products.append(item[1])
         return {
             'user_id': self.user_id,
-            'product_dict': self.product_dict,
+            'product_list': products,
             'sum': self.sum,
         }
 
