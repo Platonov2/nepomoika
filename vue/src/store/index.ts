@@ -2,6 +2,7 @@ import Product from '@/models/Product'
 import Vuex from 'vuex'
 import axios from 'axios'
 import Category from '@/models/Category'
+import router from '@/router'
 
 export default new Vuex.Store({
   state: {
@@ -13,9 +14,9 @@ export default new Vuex.Store({
     products: [] as Product[],
     editedCategory: {} as Category,
     editedProduct: {} as Product,
-    cartProducts: [] as Product[],
+    cartProducts: null as unknown as Product[],
     finalPrice: 0 as number,
-    cartList: [ 0 ] as number[],
+    orders: null as unknown,
   },
   getters: {
     TOKEN: (state) => {
@@ -34,12 +35,16 @@ export default new Vuex.Store({
     EDITED_PRODUCT: (state) => state.editedProduct,
     CART_PRODUCTS: (state) => state.cartProducts,
     FINAL_PRICE: (state) => state.finalPrice,
-    CART_LIST: (state) => state.cartList,
+    ORDERS: (state) => state.orders,
   },
   mutations: {
     SET_TOKEN: (state, token) => {
       document.cookie = "token=" + token;
       console.log(document.cookie.match(/token=(.+?)(;|$)/));
+    },
+    DELETE_COOKIE: (state) => {
+      document.cookie = "token=;max-age=-1";
+      // console.log(document.cookie.match(/token=(.+?)(;|$)/));
     },
     SET_ROOT_OF_NEW_CATEGORY_ID: (state, rootOfNewCategoryId) => {
       state.rootOfNewCategoryId = rootOfNewCategoryId;
@@ -103,8 +108,9 @@ export default new Vuex.Store({
     SET_FINAL_PRICE: (state, finalPrice) => {
       state.finalPrice = finalPrice;
     },
-    ADD_TO_CART_LIST: (state, newProductId) => {
-      state.cartList.push(newProductId);
+    SET_ORDERS: (state, orders) => {
+      console.log(orders);
+      state.orders = orders;
     },
   },
   actions: {
@@ -323,6 +329,12 @@ export default new Vuex.Store({
         .then((response) => {
           context.commit('SET_CART_PRODUCTS', response.data.product_list);
           context.commit('SET_FINAL_PRICE', response.data.sum);
+        })
+        .catch((error) => {
+          // router.push("/authorization")
+          // context.commit('DELETE_COOKIE');
+          context.commit('SET_CART_PRODUCTS', null);
+          context.commit('SET_FINAL_PRICE', 0);
         });
     },
     ADD_CART_PRODUCT(context, product_id: number) {
@@ -335,7 +347,6 @@ export default new Vuex.Store({
             params: {"product_id": product_id},
           })
           .then((response) => {
-            context.commit('ADD_TO_CART_LIST', product_id);
             resolve(response);
           })
           .catch((error) => reject(error));
@@ -352,6 +363,50 @@ export default new Vuex.Store({
           })
           .then((response) => {
             context.commit('DELETE_CART_PRODUCT', product_id);
+            resolve(response);
+          })
+          .catch((error) => reject(error));
+      });
+    },
+
+    /**        ЗАКАЗ          */
+
+    CREATE_ORDER (context) {
+      return new Promise((resolve, reject) => {
+        axios
+          .post('http://localhost:8099/cart/order', null, {
+            headers: {
+              Authorization: 'Bearer ' + context.getters.TOKEN
+            },
+          })
+          .then((response) => {
+            resolve(response);
+          })
+          .catch((error) => reject(error));
+      });
+    },
+    GET_ORDERS: (context) => {
+      const headers = {
+        'Authorization': "Bearer " + context.getters.TOKEN,
+      }
+      axios
+        .get('http://localhost:8099/order/get', {
+          headers: headers
+        })
+        .then((response) => {
+          context.commit('SET_ORDERS', response.data.orders);
+        });
+    },
+    CANCEL_ORDER (context, aggregate_id) {
+      const temp = { aggregate_id : aggregate_id }
+      return new Promise((resolve, reject) => {
+        axios
+          .post('http://localhost:8099/order/cancel', temp, {
+            headers: {
+              Authorization: 'Bearer ' + context.getters.TOKEN
+            },
+          })
+          .then((response) => {
             resolve(response);
           })
           .catch((error) => reject(error));

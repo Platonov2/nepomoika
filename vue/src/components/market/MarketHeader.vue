@@ -35,7 +35,7 @@ export default class MarketHeader extends Vue {
   }
 
   onLogoutClick() {
-    this.$store.commit('SET_TOKEN', "");
+    this.$store.commit('DELETE_COOKIE');
     this.$router.push('/authorization');
   }
 
