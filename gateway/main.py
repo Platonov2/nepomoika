@@ -57,6 +57,7 @@ from flask_jwt_extended import jwt_required
 
 BACKEND_ADDRESS = "http://backend:5000/"
 CART_ADDRESS = "http://cart:5000/"
+ORDER_ADDRESS = "http://order:5000/"
 
 
 @server.route('/catalog/<path:path>', methods=["POST", "GET"])
@@ -84,6 +85,15 @@ def cart_access(path):
     headers = get_headers_with_user_id_and_role_from_identity(current_identity)
 
     return redirect_method(CART_ADDRESS + "/cart/", path, headers)
+
+
+@server.route('/order/<path:path>', methods=["POST", "GET"])
+@jwt_required()
+def order_access(path):
+    current_identity = get_jwt_identity()
+    headers = get_headers_with_user_id_and_role_from_identity(current_identity)
+
+    return redirect_method(ORDER_ADDRESS + "/order/", path, headers)
 
 
 def get_headers_with_user_id_and_role_from_identity(current_identity) -> {}:

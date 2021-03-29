@@ -44,17 +44,6 @@ def root():
     """
 
 
-
-# def check_role_header(role_name):
-#     def decorator(function):
-#         @wraps(function)
-#         def wrapper(text):
-#             attr_string = " ".join(f"{k}='{v}'" for k, v in attrs.items())
-#             text = f"<{tag} {attr_string}>{text}</{tag}>"
-#             return function(text)
-#         return wrapper
-#     return decorator
-# Defining header check decorator
 def admin_only(f):
     @wraps(f)
     def decorated_function(*args, **kwargs):

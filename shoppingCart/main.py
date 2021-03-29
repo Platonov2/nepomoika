@@ -6,6 +6,7 @@ from documentDB.models.shoppingCart import ShoppingCart
 from queueMessaging.consumers.changeMessageConsumer import ChangeMessageConsumer
 from queueMessaging.messageHandlers.CUDMessageHandler import CUDMessageHandler
 from documentDB.repositories.shoppingCartRepository import ShoppingCartRepository
+from queueMessaging.publishers.orderPublish import OrderPublish
 
 
 @server.route("/cart/add", methods=['POST'])
@@ -37,6 +38,19 @@ def get_shopping_cart():
     if user_id:
         shopping_cart = ShoppingCartRepository.get_product_card(user_id)
         return shopping_cart.serialize_with_list_of_products_and_total_price(), 200
+    else:
+        return jsonify({"msg": "Bad request"}), 400
+
+
+@server.route("/cart/order", methods=['POST'])
+def form_order():
+    user_id = request.headers.get('x-user-id', None)
+    if user_id:
+        shopping_cart = ShoppingCartRepository.get_product_card(user_id)
+        publisher = OrderPublish()
+        publisher.publish_task(shopping_cart.serialize_with_list_of_products_and_total_price())
+        ShoppingCartRepository.remove_shopping_cart(user_id)
+        return "succ", 200
     else:
         return jsonify({"msg": "Bad request"}), 400
 

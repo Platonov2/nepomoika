@@ -34,8 +34,8 @@ class ShoppingCartRepository:
         shopping_cart_collection.update({"user_id": update_shopping_cart["user_id"]}, update_shopping_cart)
 
     @staticmethod
-    def remove_shopping_cart(remove_shopping_cart) -> None:
-        shopping_cart_collection.remove({"user_id": remove_shopping_cart["user_id"]})
+    def remove_shopping_cart(user_id) -> None:
+        shopping_cart_collection.remove({"user_id": user_id})
 
     @staticmethod
     def update_product_in_all_shopping_carts(product) ->None:

@@ -85,6 +85,27 @@ services:
       - RABBITMQ_DEFAULT_PASS=${RABBITMQ_DEFAULT_PASS}
     command: ["python", "./main.py"]
 
+  order:
+    build:
+      context: ./order
+      dockerfile: Dockerfile
+    ports:
+      - "8097:5000"
+    depends_on:
+      rabbit:
+        condition: service_healthy
+      postgres:
+        condition: service_healthy
+    environment:
+      - RABBITMQ_DEFAULT_USER=${RABBITMQ_DEFAULT_USER}
+      - RABBITMQ_DEFAULT_PASS=${RABBITMQ_DEFAULT_PASS}
+      - POSTGRES_HOST=${POSTGRES_HOST}
+      - POSTGRES_PORT=${POSTGRES_PORT}
+      - POSTGRES_USER=${POSTGRES_USER}
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
+      - POSTGRES_ORDERS_DB=${POSTGRES_ORDERS_DB}
+    command: ["python", "./main.py"]
+
   gateway:
     build:
       context: ./gateway
@@ -110,7 +131,7 @@ services:
       - ./docker-postgresql-multiple-databases:/docker-entrypoint-initdb.d
       - db_data_back:/var/lib/postgresql/data
     environment:
-      - POSTGRES_MULTIPLE_DATABASES=${POSTGRES_DB},${POSTGRES_USERS_DB}
+      - POSTGRES_MULTIPLE_DATABASES=${POSTGRES_DB},${POSTGRES_USERS_DB},${POSTGRES_ORDERS_DB}
       - POSTGRES_USER=${POSTGRES_USER}
       - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
     ports:
@@ -126,3 +147,4 @@ volumes:
   mongovolume:
 # psql -h localhost -p 5432 -U back -d store
 # psql -h localhost -p 5432 -U back -d users
+# psql -h localhost -p 5432 -U back -d orders

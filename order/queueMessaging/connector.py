@@ -16,5 +16,4 @@ class Connector:
     def perform_setup_queue_infrastructure(self):
         if self.channel == "":
             raise BaseException("First you need to use connect method")
-        self.channel.queue_declare(queue='message_queue_shopping_cart', durable=True)
         self.channel.queue_declare(queue='message_queue_order', durable=True)
