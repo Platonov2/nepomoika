@@ -1,6 +1,6 @@
 <template>
   <div>
-    <MarketHeader id="marketHeader"/>
+    <AdminHeader id="adminHeader"/>
     <ul id="ordersList">
       <div id="title">
         Текущие заказы
@@ -40,10 +40,18 @@
           </div>
         </div>
         <div id="buttons">
-        <button id="removeProduct" v-on:click="removeOrder(order)"
-        v-if="order.order_status=='OrderStatus.UNCHECKED'">
-          Отменить
-        </button>
+          <button id="checkOrder" v-on:click="checkOrder(order)"
+          v-if="order.order_status=='OrderStatus.UNCHECKED'">
+            Подтвердить
+          </button>
+          <button id="completeOrder" v-on:click="completeOrder(order)"
+          v-if="order.order_status=='OrderStatus.CHECKED'">
+            Завершить
+          </button>
+          <button id="abortProduct" v-on:click="abortProduct(order)"
+          v-if="order.order_status=='OrderStatus.UNCHECKED' || order.order_status=='OrderStatus.CHECKED'">
+            Прервать
+          </button>
         </div>
       </li>
     </ul>
@@ -52,11 +60,11 @@
 
 <script lang="ts">
 import { Component, Vue } from 'vue-property-decorator';
-import MarketHeader from './MarketHeader.vue';
+import AdminHeader from './AdminHeader.vue';
 
 @Component({
   components: {
-    MarketHeader,
+    AdminHeader,
   },
 })
 export default class MarketOrders extends Vue {
@@ -67,6 +75,21 @@ export default class MarketOrders extends Vue {
 
   mounted() {
     this.$store.dispatch("GET_ORDERS");
+  }
+
+  checkOrder(order) {
+    order.order_status = "OrderStatus.CHECKED";
+    this.$store.dispatch("CHANGE_ORDER_STATUS", [order.aggregate_id, "OrderStatus.CHECKED"]);
+  }
+
+  completeOrder(order) {
+    order.order_status = "OrderStatus.COMPLETED";
+    this.$store.dispatch("CHANGE_ORDER_STATUS", [order.aggregate_id, "OrderStatus.COMPLETED"]);
+  }
+
+  abortProduct(order) {
+    order.order_status = "OrderStatus.ABORTED";
+    this.$store.dispatch("CHANGE_ORDER_STATUS", [order.aggregate_id, "OrderStatus.ABORTED"]);
   }
 
   removeOrder(order) {
@@ -131,7 +154,9 @@ export default class MarketOrders extends Vue {
       vertical-align: bottom;
       margin-bottom: 10px;
 
-      #removeProduct {
+      #checkOrder, #completeOrder, #abortProduct {
+        display: block;
+        margin-top: 10px;
         font-size: 12pt;
         width: 100%;
       }

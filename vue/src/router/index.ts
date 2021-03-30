@@ -22,6 +22,11 @@ const routes: Array<RouteConfig> = [
     component: () => import('../components/AddProduct.vue'),
   },
   {
+    path: '/admin/orders',
+    name: 'AdminOrders',
+    component: () => import('../components/admin/AdminOrders.vue'),
+  },
+  {
     path: '/authorization',
     name: 'Authorization',
     component: () => import('../components/market/MarketAuthorization.vue'),
@@ -30,6 +35,11 @@ const routes: Array<RouteConfig> = [
     path: '/registration',
     name: 'Registration',
     component: () => import('../components/market/MarketRegistration.vue'),
+  },
+  {
+    path: '/orders',
+    name: 'Orders',
+    component: () => import('../components/market/MarketOrders.vue'),
   },
   {
     path: '/cart',

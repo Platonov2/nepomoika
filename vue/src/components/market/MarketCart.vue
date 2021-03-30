@@ -22,15 +22,14 @@
             </button>
             </div>
           </li>
+          <button id="createOrder" v-on:click="createOrder()" v-if="cartProducts!=null">
+            Оформить заказ
+          </button>
+          <div v-else>
+            Корзина пуста
+          </div>
         </ul>
-        <button id="createOrder" v-on:click="createOrder()" v-if="cartProducts!=null">
-          Оформить заказ
-        </button>
-        <div v-else>
-          Корзина пуста
-        </div>
       </div>
-      <MarketOrders id="marketOrders"/>
     </div>
   </div>
 </template>
@@ -38,12 +37,10 @@
 <script lang="ts">
 import { Component, Vue } from 'vue-property-decorator';
 import MarketHeader from './MarketHeader.vue';
-import MarketOrders from './MarketOrders.vue';
 
 @Component({
   components: {
     MarketHeader,
-    MarketOrders,
   },
 })
 export default class MarketCart extends Vue {
@@ -63,8 +60,7 @@ export default class MarketCart extends Vue {
   createOrder() {
     console.log(this.$store.getters.TOKEN);
     this.$store.dispatch("CREATE_ORDER");
-    alert("Заказ оформлен");
-    this.$router.push("/");
+    this.$router.push("/orders");
   }
 }
 </script>
@@ -75,8 +71,9 @@ export default class MarketCart extends Vue {
   display: inline-block;
 
   #cartList {
+    display: inline-block;
     list-style-type: none;
-    padding-left: 0px;
+    margin: 40px;
 
     #title {
       display: block;
@@ -113,11 +110,11 @@ export default class MarketCart extends Vue {
         }
       }
     }
-  }
-}
 
-#marketOrders {
-  display: inline-block;
+    #createOrder {
+      margin-top: 30px;
+    }
+  }
 }
 
 </style>

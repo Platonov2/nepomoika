@@ -397,11 +397,29 @@ export default new Vuex.Store({
           context.commit('SET_ORDERS', response.data.orders);
         });
     },
-    CANCEL_ORDER (context, aggregate_id) {
+    CANCEL_ORDER (context, aggregate_id: number) {
       const temp = { aggregate_id : aggregate_id }
       return new Promise((resolve, reject) => {
         axios
           .post('http://localhost:8099/order/cancel', temp, {
+            headers: {
+              Authorization: 'Bearer ' + context.getters.TOKEN
+            },
+          })
+          .then((response) => {
+            resolve(response);
+          })
+          .catch((error) => reject(error));
+      });
+    },
+    CHANGE_ORDER_STATUS (context, [aggregate_id, status]) {
+      const temp = { 
+        aggregate_id : aggregate_id,
+        order_status : status,
+      }
+      return new Promise((resolve, reject) => {
+        axios
+          .post('http://localhost:8099/order/status', temp, {
             headers: {
               Authorization: 'Bearer ' + context.getters.TOKEN
             },

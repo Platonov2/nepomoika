@@ -8,6 +8,9 @@
       </div>
       <div id="rightPart">
         <div id="buttons">
+          <button id="orders" class="headerButton" v-on:click="onOrderClick()">
+            <div id="orders-text">Заказы</div>
+          </button>
           <button id="cart" class="headerButton" v-on:click="onCartClick()">
             <div id="cart-text">Корзина</div>
           </button>
@@ -28,6 +31,10 @@ export default class MarketHeader extends Vue {
 
   onCatalogClick() {
     this.$router.push('/');
+  }
+
+  onOrderClick() {
+    this.$router.push('/orders');
   }
 
   onCartClick() {
